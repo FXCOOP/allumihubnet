@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מדריך פריסה - AlumniHubNet</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: #1e40af;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+
+        h3 {
+            color: #1d4ed8;
+            margin-top: 25px;
+        }
+
+        .step {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        code {
+            background: #1e293b;
+            color: #22d3ee;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            direction: ltr;
+            text-align: left;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #e2e8f0;
+        }
+
+        .highlight {
+            color: #22d3ee;
+        }
+
+        .comment {
+            color: #6b7280;
+        }
+
+        .warning {
+            background: #fef3c7;
+            border-right: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .success {
+            background: #d1fae5;
+            border-right: 4px solid #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .info {
+            background: #dbeafe;
+            border-right: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            text-decoration: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            text-align: right;
+        }
+
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            padding-right: 30px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            position: absolute;
+            right: 0;
+            color: #3b82f6;
+        }
+
+        .toc {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-right: 20px;
+        }
+
+        .toc a {
+            display: block;
+            padding: 5px 0;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            pre {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 מדריך פריסה מלא</h1>
+    <p class="subtitle">AlumniHubNet.xyz - מהמחשב המקומי לאינטרנט</p>
+
+    <div class="toc">
+        <h3>תוכן עניינים</h3>
+        <ul>
+            <li><a href="#prerequisites">1. דרישות מוקדמות</a></li>
+            <li><a href="#supabase">2. הקמת Supabase</a></li>
+            <li><a href="#local">3. הרצה מקומית</a></li>
+            <li><a href="#github">4. העלאה ל-GitHub</a></li>
+            <li><a href="#render">5. פריסה ב-Render</a></li>
+            <li><a href="#domain">6. חיבור דומיין</a></li>
+            <li><a href="#troubleshooting">7. פתרון בעיות</a></li>
+        </ul>
+    </div>
+
+    <!-- Section 1: Prerequisites -->
+    <h2 id="prerequisites">1. דרישות מוקדמות</h2>
+
+    <div class="step">
+        <h3>תוכנות נדרשות</h3>
+        <ul class="checklist">
+            <li><strong>Node.js 20+</strong> - <a href="https://nodejs.org" target="_blank">הורדה</a></li>
+            <li><strong>Git</strong> - <a href="https://git-scm.com" target="_blank">הורדה</a></li>
+            <li><strong>VS Code</strong> (מומלץ) - <a href="https://code.visualstudio.com" target="_blank">הורדה</a></li>
+        </ul>
+
+        <h3>חשבונות נדרשים (חינם)</h3>
+        <ul class="checklist">
+            <li><strong>GitHub</strong> - <a href="https://github.com/signup" target="_blank">הרשמה</a></li>
+            <li><strong>Supabase</strong> - <a href="https://supabase.com" target="_blank">הרשמה</a></li>
+            <li><strong>Render</strong> - <a href="https://render.com" target="_blank">הרשמה</a></li>
+        </ul>
+    </div>
+
+    <!-- Section 2: Supabase -->
+    <h2 id="supabase">2. הקמת Supabase (בסיס נתונים)</h2>
+
+    <div class="step">
+        <p><span class="step-number">1</span> היכנס ל-<a href="https://supabase.com" target="_blank">supabase.com</a> והתחבר</p>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">2</span> לחץ על <strong>"New Project"</strong></p>
+        <ul>
+            <li><strong>Project name:</strong> alumnihubnet</li>
+            <li><strong>Database Password:</strong> בחר סיסמה חזקה ושמור אותה!</li>
+            <li><strong>Region:</strong> West EU (Frankfurt) - הכי קרוב לישראל</li>
+        </ul>
+        <p>המתן כ-2 דקות ליצירת הפרויקט</p>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">3</span> קבל את כתובות החיבור</p>
+        <p>לך ל-<strong>Settings → Database</strong></p>
+
+        <div class="info">
+            <strong>Connection string (Transaction pooler):</strong>
+            <pre><code>postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?pgbouncer=true</code></pre>
+
+            <strong>Direct connection:</strong>
+            <pre><code>postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres</code></pre>
+        </div>
+
+        <div class="warning">
+            ⚠️ החלף <code>[PASSWORD]</code> בסיסמה שבחרת בשלב 2
+        </div>
+    </div>
+
+    <!-- Section 3: Local Setup -->
+    <h2 id="local">3. הרצה מקומית</h2>
+
+    <div class="step">
+        <p><span class="step-number">1</span> פתח PowerShell או Terminal והריץ:</p>
+        <pre><code><span class="comment"># מעבר לתיקיית הפרויקט</span>
+cd C:\Users\User\alumnihubnet
+
+<span class="comment"># התקנת חבילות</span>
+npm install</code></pre>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">2</span> צור קובץ <code>.env</code></p>
+        <pre><code><span class="comment"># העתק את קובץ הדוגמה</span>
+copy .env.example .env</code></pre>
+
+        <p>פתח את <code>.env</code> ועדכן:</p>
+        <pre><code><span class="comment"># Supabase</span>
+DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+
+<span class="comment"># NextAuth - צור מחרוזת אקראית</span>
+NEXTAUTH_SECRET="your-super-secret-key-at-least-32-characters"
+NEXTAUTH_URL="http://localhost:3000"</code></pre>
+
+        <div class="info">
+            💡 ליצירת NEXTAUTH_SECRET אקראי, הריץ ב-PowerShell:
+            <pre><code>node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"</code></pre>
+        </div>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">3</span> יצירת טבלאות בבסיס הנתונים</p>
+        <pre><code><span class="comment"># Push schema to Supabase</span>
+npx prisma db push
+
+<span class="comment"># הרצת seed - יוצר את תיכון חדרה 2003</span>
+npm run db:seed</code></pre>
+
+        <div class="success">
+            ✅ אמור להופיע: "Created school: תיכון חדרה" ו-"Created batch: מחזור חדרה 2003"
+        </div>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">4</span> הרצת האפליקציה</p>
+        <pre><code>npm run dev</code></pre>
+
+        <p>פתח בדפדפן: <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></p>
+
+        <div class="success">
+            ✅ אתה אמור לראות את עמוד ההתחברות בעברית!
+        </div>
+    </div>
+
+    <!-- Section 4: GitHub -->
+    <h2 id="github">4. העלאה ל-GitHub</h2>
+
+    <div class="step">
+        <p><span class="step-number">1</span> צור Repository חדש ב-GitHub</p>
+        <ul>
+            <li>לך ל-<a href="https://github.com/new" target="_blank">github.com/new</a></li>
+            <li><strong>Repository name:</strong> alumnihubnet</li>
+            <li>בחר <strong>Private</strong> (מומלץ)</li>
+            <li>לחץ <strong>"Create repository"</strong></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">2</span> אתחל Git ודחוף את הקוד</p>
+        <pre><code><span class="comment"># חזור לתיקיית הפרויקט</span>
+cd C:\Users\User\alumnihubnet
+
+<span class="comment"># אתחול Git</span>
+git init
+
+<span class="comment"># הוספת כל הקבצים</span>
+git add .
+
+<span class="comment"># Commit ראשון</span>
+git commit -m "Initial commit - AlumniHubNet"
+
+<span class="comment"># הגדרת branch ראשי</span>
+git branch -M main
+
+<span class="comment"># חיבור ל-GitHub (החלף YOUR-USERNAME)</span>
+git remote add origin https://github.com/YOUR-USERNAME/alumnihubnet.git
+
+<span class="comment"># דחיפה ל-GitHub</span>
+git push -u origin main</code></pre>
+
+        <div class="warning">
+            ⚠️ אם זו הפעם הראשונה שלך עם Git, תתבקש להתחבר לחשבון GitHub שלך
+        </div>
+    </div>
+
+    <!-- Section 5: Render -->
+    <h2 id="render">5. פריסה ב-Render</h2>
+
+    <div class="step">
+        <p><span class="step-number">1</span> התחבר ל-Render</p>
+        <ul>
+            <li>לך ל-<a href="https://render.com" target="_blank">render.com</a></li>
+            <li>לחץ <strong>"Get Started"</strong></li>
+            <li>בחר <strong>"Sign in with GitHub"</strong></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">2</span> צור Web Service חדש</p>
+        <ul>
+            <li>לחץ <strong>"New +"</strong> → <strong>"Web Service"</strong></li>
+            <li>בחר <strong>"Build and deploy from a Git repository"</strong></li>
+            <li>חבר את ה-Repository <code>alumnihubnet</code></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">3</span> הגדר את השירות</p>
+
+        <table>
+            <tr>
+                <th>שדה</th>
+                <th>ערך</th>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td>alumnihubnet</td>
+            </tr>
+            <tr>
+                <td>Region</td>
+                <td>Frankfurt (EU Central)</td>
+            </tr>
+            <tr>
+                <td>Branch</td>
+                <td>main</td>
+            </tr>
+            <tr>
+                <td>Runtime</td>
+                <td>Node</td>
+            </tr>
+            <tr>
+                <td>Build Command</td>
+                <td><code>npm install && npm run build</code></td>
+            </tr>
+            <tr>
+                <td>Start Command</td>
+                <td><code>npm start</code></td>
+            </tr>
+            <tr>
+                <td>Instance Type</td>
+                <td>Free</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">4</span> הוסף משתני סביבה</p>
+        <p>גלול למטה ל-<strong>"Environment Variables"</strong> והוסף:</p>
+
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>DATABASE_URL</td>
+                <td>הכתובת מ-Supabase (עם pgbouncer=true)</td>
+            </tr>
+            <tr>
+                <td>DIRECT_URL</td>
+                <td>הכתובת הישירה מ-Supabase</td>
+            </tr>
+            <tr>
+                <td>NEXTAUTH_SECRET</td>
+                <td>המחרוזת האקראית שיצרת</td>
+            </tr>
+            <tr>
+                <td>NEXTAUTH_URL</td>
+                <td>https://alumnihubnet.onrender.com</td>
+            </tr>
+        </table>
+
+        <div class="warning">
+            ⚠️ שים לב: ה-NEXTAUTH_URL צריך להיות ה-URL של Render (יופיע אחרי יצירת השירות)
+        </div>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">5</span> לחץ <strong>"Create Web Service"</strong></p>
+        <p>Render יתחיל לבנות את האפליקציה. זה לוקח כ-5-10 דקות.</p>
+
+        <div class="info">
+            💡 עקוב אחרי ה-Logs. כשתראה "Ready on http://0.0.0.0:10000" - זה עובד!
+        </div>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">6</span> בדוק שהאפליקציה עובדת</p>
+        <p>לחץ על הקישור בראש העמוד (משהו כמו <code>https://alumnihubnet.onrender.com</code>)</p>
+
+        <div class="success">
+            ✅ מזל טוב! האפליקציה שלך באוויר!
+        </div>
+    </div>
+
+    <!-- Section 6: Domain -->
+    <h2 id="domain">6. חיבור דומיין מותאם אישית</h2>
+
+    <div class="step">
+        <p><span class="step-number">1</span> ב-Render, לך ל-<strong>Settings → Custom Domains</strong></p>
+        <p>לחץ <strong>"Add Custom Domain"</strong></p>
+        <p>הכנס: <code>alumnihubnet.xyz</code></p>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">2</span> עדכן DNS אצל ספק הדומיין שלך</p>
+        <p>הוסף רשומת CNAME:</p>
+
+        <table>
+            <tr>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>CNAME</td>
+                <td>@</td>
+                <td>alumnihubnet.onrender.com</td>
+            </tr>
+        </table>
+
+        <div class="info">
+            💡 אם הספק לא תומך ב-CNAME ל-root domain, השתמש ב-www:
+            <br>
+            <code>www</code> → <code>alumnihubnet.onrender.com</code>
+        </div>
+    </div>
+
+    <div class="step">
+        <p><span class="step-number">3</span> עדכן NEXTAUTH_URL ב-Render</p>
+        <p>שנה ל: <code>https://alumnihubnet.xyz</code></p>
+    </div>
+
+    <!-- Section 7: Troubleshooting -->
+    <h2 id="troubleshooting">7. פתרון בעיות נפוצות</h2>
+
+    <div class="step">
+        <h3>❌ שגיאת Build ב-Render</h3>
+        <p><strong>בעיה:</strong> הבנייה נכשלת</p>
+        <p><strong>פתרון:</strong></p>
+        <ul>
+            <li>בדוק ב-Logs מה השגיאה המדויקת</li>
+            <li>וודא שכל משתני הסביבה מוגדרים נכון</li>
+            <li>נסה להריץ <code>npm run build</code> מקומית לפני push</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3>❌ שגיאת חיבור לבסיס נתונים</h3>
+        <p><strong>בעיה:</strong> "Can't reach database server"</p>
+        <p><strong>פתרון:</strong></p>
+        <ul>
+            <li>וודא שה-DATABASE_URL נכון</li>
+            <li>בדוק שהסיסמה נכונה (בלי תווים מיוחדים בעייתיים)</li>
+            <li>וודא ש-<code>?pgbouncer=true</code> נמצא בסוף ה-URL</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3>❌ שגיאת NextAuth</h3>
+        <p><strong>בעיה:</strong> "NEXTAUTH_SECRET is not set"</p>
+        <p><strong>פתרון:</strong></p>
+        <ul>
+            <li>וודא שהוספת NEXTAUTH_SECRET ב-Render</li>
+            <li>וודא שזו מחרוזת של לפחות 32 תווים</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3>❌ האתר עולה לאט</h3>
+        <p><strong>בעיה:</strong> בפעם הראשונה לוקח הרבה זמן</p>
+        <p><strong>פתרון:</strong> זה נורמלי ב-Free tier של Render. השרת "נרדם" אחרי חוסר פעילות ומתעורר כשיש בקשה.</p>
+        <p>אפשר לשדרג ל-Paid plan לביצועים טובים יותר.</p>
+    </div>
+
+    <!-- Final Checklist -->
+    <h2>✅ צ'קליסט סופי</h2>
+
+    <div class="step">
+        <ul class="checklist">
+            <li>Supabase פרויקט נוצר</li>
+            <li>טבלאות נוצרו (prisma db push)</li>
+            <li>Seed הורץ בהצלחה</li>
+            <li>GitHub repository נוצר</li>
+            <li>קוד נדחף ל-GitHub</li>
+            <li>Render service נוצר</li>
+            <li>משתני סביבה הוגדרו ב-Render</li>
+            <li>האפליקציה עובדת!</li>
+        </ul>
+    </div>
+
+    <div class="success" style="text-align: center; margin-top: 40px;">
+        <h3>🎉 מזל טוב!</h3>
+        <p>AlumniHubNet שלך עכשיו באוויר וזמין לכל העולם!</p>
+        <p>
+            <a href="https://github.com" class="btn">GitHub</a>
+            <a href="https://supabase.com" class="btn">Supabase</a>
+            <a href="https://render.com" class="btn">Render</a>
+        </p>
+    </div>
+
+    <footer style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #666;">
+        <p>AlumniHubNet - קהילת בוגרי תיכון חדרה 2003</p>
+        <p style="font-size: 0.8em;">נוצר עם ❤️ ו-Claude Code</p>
+    </footer>
+</body>
+</html>
