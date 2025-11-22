@@ -67,7 +67,7 @@ export async function POST(req: Request) {
         creator: {
           select: { id: true, firstName: true, lastName: true },
         },
-        rsvps: [],
+        rsvps: true,
       },
     })
 
