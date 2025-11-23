@@ -4,12 +4,25 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #dbeafe;
+  --secondary: #059669;
+  --secondary-light: #d1fae5;
+  --accent: #dc2626;
+  --accent-light: #fee2e2;
+  --orange: #ea580c;
+  --orange-light: #ffedd5;
+}
+
 html {
   direction: rtl;
 }
 
 body {
   font-family: 'Heebo', sans-serif;
+  background-color: #f9fafb;
 }
 
 @layer components {
@@ -18,38 +31,78 @@ body {
   }
 
   .btn-secondary {
-    @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium;
+    @apply bg-gray-100 text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium;
   }
 
   .input-field {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+    @apply w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white;
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden;
   }
 
   .sidebar-link {
-    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors;
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium;
   }
 
   .sidebar-link.active {
-    @apply bg-blue-50 text-blue-600 font-medium;
+    @apply bg-blue-50 text-blue-600;
   }
 
   .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  }
+
+  .badge-memory {
+    @apply bg-orange-100 text-orange-700;
+  }
+
+  .badge-help {
+    @apply bg-red-100 text-red-700;
+  }
+
+  .badge-news {
+    @apply bg-green-100 text-green-700;
   }
 
   .badge-general {
-    @apply bg-gray-100 text-gray-800;
+    @apply bg-blue-100 text-blue-700;
   }
 
-  .badge-opportunity {
-    @apply bg-green-100 text-green-800;
+  .avatar {
+    @apply rounded-full flex items-center justify-center text-white font-semibold;
   }
 
-  .badge-question {
-    @apply bg-purple-100 text-purple-800;
+  .avatar-sm {
+    @apply w-8 h-8 text-xs;
+  }
+
+  .avatar-md {
+    @apply w-10 h-10 text-sm;
+  }
+
+  .avatar-lg {
+    @apply w-16 h-16 text-xl;
+  }
+
+  .online-dot {
+    @apply absolute bottom-0 left-0 w-2 h-2 bg-green-500 rounded-full border-2 border-white;
+  }
+
+  .nav-link {
+    @apply px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors flex items-center gap-2;
+  }
+
+  .nav-link.active {
+    @apply bg-blue-50 text-blue-600;
+  }
+
+  .post-action {
+    @apply flex-1 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center gap-2;
+  }
+
+  .member-item {
+    @apply flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer;
   }
 }
