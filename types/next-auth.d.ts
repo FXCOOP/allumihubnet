@@ -6,6 +6,8 @@ declare module 'next-auth' {
     firstName: string
     lastName: string
     batchId: string | null
+    avatarUrl: string | null
+    currentRole: string | null
   }
 
   interface Session {
@@ -16,6 +18,8 @@ declare module 'next-auth' {
       firstName: string
       lastName: string
       batchId: string | null
+      avatarUrl: string | null
+      currentRole: string | null
     }
   }
 }
@@ -26,5 +30,7 @@ declare module 'next-auth/jwt' {
     firstName: string
     lastName: string
     batchId: string | null
+    avatarUrl: string | null
+    currentRole: string | null
   }
 }

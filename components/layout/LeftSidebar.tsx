@@ -18,6 +18,7 @@ interface LeftSidebarProps {
     firstName: string
     lastName: string
     currentRole?: string | null
+    avatarUrl?: string | null
   }
 }
 
@@ -65,9 +66,19 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
       <div className="card overflow-hidden">
         <div className="h-16 bg-gradient-to-br from-blue-600 to-purple-600"></div>
         <div className="px-4 pb-4 text-center">
-          <div className="w-16 h-16 rounded-full bg-blue-600 border-4 border-white -mt-8 mx-auto flex items-center justify-center text-white text-xl font-semibold shadow-md">
-            {user.firstName?.[0] || ''}{user.lastName?.[0] || ''}
-          </div>
+          {user.avatarUrl ? (
+            <div className="w-16 h-16 rounded-full border-4 border-white -mt-8 mx-auto shadow-md overflow-hidden">
+              <img
+                src={user.avatarUrl}
+                alt="Profile"
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-blue-600 border-4 border-white -mt-8 mx-auto flex items-center justify-center text-white text-xl font-semibold shadow-md">
+              {user.firstName?.[0] || ''}{user.lastName?.[0] || ''}
+            </div>
+          )}
           <h3 className="mt-3 font-semibold text-gray-900">
             {user.firstName} {user.lastName}
           </h3>

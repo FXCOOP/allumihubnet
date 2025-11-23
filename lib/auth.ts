@@ -65,6 +65,8 @@ export const authOptions: NextAuthOptions = {
           name: `${user.firstName} ${user.lastName}`,
           firstName: user.firstName,
           lastName: user.lastName,
+          currentRole: user.currentRole,
+          avatarUrl: user.avatarUrl,
           batchId: batchId || 'hadera-2003',
         }
       },
@@ -77,6 +79,8 @@ export const authOptions: NextAuthOptions = {
         token.firstName = user.firstName
         token.lastName = user.lastName
         token.batchId = user.batchId
+        token.avatarUrl = user.avatarUrl
+        token.currentRole = user.currentRole
       }
       return token
     },
@@ -86,6 +90,8 @@ export const authOptions: NextAuthOptions = {
         session.user.firstName = token.firstName as string
         session.user.lastName = token.lastName as string
         session.user.batchId = token.batchId as string | null
+        session.user.avatarUrl = token.avatarUrl as string | null
+        session.user.currentRole = token.currentRole as string | null
       }
       return session
     },

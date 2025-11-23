@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import ImageCropper from '@/components/ImageCropper'
 
 interface ProfileData {
   firstName: string
@@ -38,6 +39,7 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [message, setMessage] = useState('')
+  const [cropperImage, setCropperImage] = useState<string | null>(null)
 
   const userInitials = profile.firstName && profile.lastName
     ? `${profile.firstName[0]}${profile.lastName[0]}`
@@ -49,14 +51,30 @@ export default function ProfilePage() {
     fetchProfile()
   }, [])
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
+    console.log('File selected:', file)
     if (!file) return
 
+    const reader = new FileReader()
+    reader.onload = () => {
+      console.log('File loaded, opening cropper')
+      setCropperImage(reader.result as string)
+    }
+    reader.onerror = (error) => {
+      console.error('File read error:', error)
+    }
+    reader.readAsDataURL(file)
+    e.target.value = '' // Reset input
+  }
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    setCropperImage(null)
     setUploading(true)
+
     try {
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', croppedBlob, 'profile.jpg')
 
       const res = await fetch('/api/upload', {
         method: 'POST',
@@ -66,6 +84,7 @@ export default function ProfilePage() {
       if (res.ok) {
         const { url } = await res.json()
         setProfile({ ...profile, image: url })
+        setMessage('התמונה עודכנה בהצלחה')
       } else {
         setMessage('שגיאה בהעלאת התמונה')
       }
@@ -157,7 +176,7 @@ export default function ProfilePage() {
                 </div>
               )}
               <label className="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow-lg cursor-pointer hover:bg-gray-100 transition-colors">
-                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
+                <input type="file" accept="image/*" onChange={handleImageSelect} className="hidden" disabled={uploading} />
                 {uploading ? (
                   <i className="fas fa-spinner fa-spin text-gray-600 text-xs"></i>
                 ) : (
@@ -323,6 +342,14 @@ export default function ProfilePage() {
           {saving ? 'שומר...' : 'שמירת שינויים'}
         </button>
       </form>
+
+      {cropperImage && (
+        <ImageCropper
+          image={cropperImage}
+          onCropComplete={handleCropComplete}
+          onCancel={() => setCropperImage(null)}
+        />
+      )}
     </div>
   )
 }
