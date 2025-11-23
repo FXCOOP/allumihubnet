@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Providers } from './providers'
+import CookieConsent from '@/components/CookieConsent'
 
 export const metadata: Metadata = {
   title: 'AlumniHub - קהילת בוגרים',
@@ -21,7 +22,10 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-gray-50 min-h-screen">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <CookieConsent />
+        </Providers>
       </body>
     </html>
   )

@@ -361,7 +361,13 @@ export default function FeedPage() {
 
                 {/* Post Content */}
                 {post.title && (
-                  <h3 className="font-medium mb-1">{post.title}</h3>
+                  <h3
+                    className="font-medium mb-1"
+                    dir={getTextDirection(post.title)}
+                    style={{ textAlign: getTextDirection(post.title) === 'ltr' ? 'left' : 'right' }}
+                  >
+                    {post.title}
+                  </h3>
                 )}
                 <p
                   className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap"

@@ -32,42 +32,24 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
     const base64 = buffer.toString('base64');
 
-    // Try ImgBB first (free, no API key needed for basic uploads)
-    const imgbbKey = process.env.IMGBB_API_KEY || 'free';
+    // Use Cloudinary for image hosting
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      return NextResponse.json({ error: 'Image hosting not configured. Please set CLOUDINARY environment variables.' }, { status: 500 });
+    }
 
-    const imgbbFormData = new FormData();
-    imgbbFormData.append('image', base64);
-
-    const imgbbResponse = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
-      method: 'POST',
-      body: imgbbFormData,
+    const { v2: cloudinary } = await import('cloudinary');
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
     });
 
-    if (imgbbResponse.ok) {
-      const imgbbData = await imgbbResponse.json();
-      if (imgbbData.success) {
-        return NextResponse.json({ url: imgbbData.data.url });
-      }
-    }
+    const base64DataUrl = `data:${file.type};base64,${base64}`;
+    const result = await cloudinary.uploader.upload(base64DataUrl, {
+      folder: 'alumnihub',
+    });
 
-    // Fallback to Cloudinary if configured
-    if (process.env.CLOUDINARY_CLOUD_NAME) {
-      const { v2: cloudinary } = await import('cloudinary');
-      cloudinary.config({
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-        api_key: process.env.CLOUDINARY_API_KEY,
-        api_secret: process.env.CLOUDINARY_API_SECRET,
-      });
-
-      const base64DataUrl = `data:${file.type};base64,${base64}`;
-      const result = await cloudinary.uploader.upload(base64DataUrl, {
-        folder: 'alumnihub',
-      });
-
-      return NextResponse.json({ url: result.secure_url });
-    }
-
-    return NextResponse.json({ error: 'No image hosting configured' }, { status: 500 });
+    return NextResponse.json({ url: result.secure_url });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });

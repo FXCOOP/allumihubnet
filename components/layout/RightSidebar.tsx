@@ -107,7 +107,7 @@ export default function RightSidebar() {
         {' • '}
         <a href="/privacy" className="text-blue-600 hover:underline">פרטיות</a>
         {' • '}
-        <a href="/cookies" className="text-blue-600 hover:underline">עוגיות</a>
+        <a href="/cookies" className="text-blue-600 hover:underline">Cookies</a>
       </div>
     </aside>
   )
