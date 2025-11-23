@@ -53,6 +53,22 @@ function timeAgo(date: string) {
   return past.toLocaleDateString('he-IL')
 }
 
+// Detect if text is primarily LTR (English/Latin) or RTL (Hebrew/Arabic)
+function getTextDirection(text: string): 'ltr' | 'rtl' {
+  const rtlChars = /[\u0590-\u05FF\u0600-\u06FF]/g
+  const ltrChars = /[A-Za-z]/g
+
+  const rtlMatches = text.match(rtlChars) || []
+  const ltrMatches = text.match(ltrChars) || []
+
+  // If first significant character is LTR, use LTR
+  const firstChar = text.trim().charAt(0)
+  if (/[A-Za-z]/.test(firstChar)) return 'ltr'
+  if (/[\u0590-\u05FF\u0600-\u06FF]/.test(firstChar)) return 'rtl'
+
+  return ltrMatches.length > rtlMatches.length ? 'ltr' : 'rtl'
+}
+
 export default function FeedPage() {
   const { data: session } = useSession()
   const [posts, setPosts] = useState<Post[]>([])
@@ -276,7 +292,11 @@ export default function FeedPage() {
                 {post.title && (
                   <h3 className="font-medium mb-1">{post.title}</h3>
                 )}
-                <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                <p
+                  className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap"
+                  dir={getTextDirection(post.content)}
+                  style={{ textAlign: getTextDirection(post.content) === 'ltr' ? 'left' : 'right' }}
+                >
                   {post.content}
                 </p>
 

@@ -42,7 +42,22 @@ export default function MessagesPage() {
 
   useEffect(() => {
     fetchThreads()
+    // Load all batch members for new thread
+    fetchBatchMembers()
   }, [])
+
+  const fetchBatchMembers = async () => {
+    const res = await fetch('/api/batch/members')
+    const data = await res.json()
+    if (Array.isArray(data)) {
+      setUsers(data.map((m: { id: string; name: string; currentRole?: string }) => ({
+        id: m.id,
+        firstName: m.name.split(' ')[0],
+        lastName: m.name.split(' ')[1] || '',
+        currentRole: m.currentRole || null,
+      })).filter((u: User) => u.id !== session?.user?.id))
+    }
+  }
 
   useEffect(() => {
     if (selectedThread) {

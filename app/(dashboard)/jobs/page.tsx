@@ -37,6 +37,7 @@ export default function JobsPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [filterType, setFilterType] = useState<string>('all');
   const [submitting, setSubmitting] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [newJob, setNewJob] = useState({
     title: '',
     company: '',
@@ -241,7 +242,11 @@ export default function JobsPage() {
       {/* Jobs List */}
       <div className="space-y-4">
         {filteredJobs.map((job) => (
-          <div key={job.id} className="bg-white rounded-lg p-6 shadow-sm border hover:shadow-md transition-shadow">
+          <div
+            key={job.id}
+            className="bg-white rounded-lg p-6 shadow-sm border hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => setSelectedJob(job)}
+          >
             <div className="flex justify-between items-start mb-3">
               <div>
                 <h3 className="font-semibold text-lg">{job.title}</h3>
@@ -265,28 +270,15 @@ export default function JobsPage() {
               )}
             </div>
 
-            <p className="text-gray-700 mb-4">{job.description}</p>
+            <p className="text-gray-700 mb-4 line-clamp-2">{job.description}</p>
 
-            <div className="flex flex-wrap gap-4 pt-3 border-t">
-              {job.contactEmail && (
-                <a
-                  href={`mailto:${job.contactEmail}`}
-                  className="text-blue-600 hover:underline text-sm flex items-center gap-1"
-                >
-                  ✉️ {job.contactEmail}
-                </a>
-              )}
-              {job.contactPhone && (
-                <a
-                  href={`tel:${job.contactPhone}`}
-                  className="text-blue-600 hover:underline text-sm flex items-center gap-1"
-                >
-                  📞 {job.contactPhone}
-                </a>
-              )}
-              <span className="text-sm text-gray-500 mr-auto">
-                פורסם ע"י {job.poster.firstName} {job.poster.lastName} • {job.createdAt}
+            <div className="flex items-center justify-between pt-3 border-t">
+              <span className="text-sm text-gray-500">
+                פורסם ע"י {job.poster.firstName} {job.poster.lastName}
               </span>
+              <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                צפה בפרטים →
+              </button>
             </div>
           </div>
         ))}
@@ -298,6 +290,71 @@ export default function JobsPage() {
           </div>
         )}
       </div>
+
+      {/* Job Detail Modal */}
+      {selectedJob && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedJob(null)}>
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="bg-gradient-to-l from-green-500 to-emerald-600 p-6 text-white">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-2xl font-bold">{selectedJob.title}</h2>
+                  <p className="text-white/90 text-lg">{selectedJob.company}</p>
+                </div>
+                <button onClick={() => setSelectedJob(null)} className="text-white/80 hover:text-white text-2xl">
+                  ×
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-3 mt-4">
+                <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                  {typeLabels[selectedJob.type]}
+                </span>
+                {selectedJob.location && (
+                  <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                    📍 {selectedJob.location}
+                  </span>
+                )}
+                {selectedJob.salary && (
+                  <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                    💰 {selectedJob.salary}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="p-6">
+              <h3 className="font-semibold mb-3">תיאור המשרה</h3>
+              <p className="text-gray-700 whitespace-pre-wrap mb-6">{selectedJob.description}</p>
+
+              <h3 className="font-semibold mb-3">יצירת קשר</h3>
+              <div className="space-y-2">
+                {selectedJob.contactEmail && (
+                  <a
+                    href={`mailto:${selectedJob.contactEmail}`}
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                  >
+                    <i className="fas fa-envelope"></i>
+                    {selectedJob.contactEmail}
+                  </a>
+                )}
+                {selectedJob.contactPhone && (
+                  <a
+                    href={`tel:${selectedJob.contactPhone}`}
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                  >
+                    <i className="fas fa-phone"></i>
+                    <span dir="ltr">{selectedJob.contactPhone}</span>
+                  </a>
+                )}
+              </div>
+
+              <div className="mt-6 pt-4 border-t text-sm text-gray-500">
+                פורסם ע"י {selectedJob.poster.firstName} {selectedJob.poster.lastName} • {selectedJob.createdAt}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
