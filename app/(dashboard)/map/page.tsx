@@ -122,7 +122,7 @@ export default function MapPage() {
     .filter(Boolean) as (Alumni & { coords: [number, number] })[]
 
   // Get unique cities
-  const cities = [...new Set(alumniWithCoords.map(a => a.city!))]
+  const cities = Array.from(new Set(alumniWithCoords.map(a => a.city!)))
 
   // Filter by selected city
   const filteredAlumni = selectedCity === 'all'
