@@ -21,11 +21,17 @@ interface LeftSidebarProps {
   }
 }
 
+interface UserStats {
+  postsCount: number
+  commentsCount: number
+}
+
 export default function LeftSidebar({ user }: LeftSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const [members, setMembers] = useState<Member[]>([])
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
+  const [stats, setStats] = useState<UserStats>({ postsCount: 0, commentsCount: 0 })
 
   const menuItems = [
     { name: 'פיד', href: '/feed', icon: 'fas fa-newspaper' },
@@ -41,6 +47,11 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
     fetch('/api/batch/members')
       .then(res => res.json())
       .then(data => setMembers(data))
+      .catch(console.error)
+
+    fetch('/api/user/stats')
+      .then(res => res.json())
+      .then(data => setStats(data))
       .catch(console.error)
   }, [])
 
@@ -64,11 +75,11 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
           )}
           <div className="flex justify-center gap-6 mt-4 pt-4 border-t border-gray-200">
             <div className="text-center">
-              <div className="text-lg font-semibold text-blue-600">0</div>
+              <div className="text-lg font-semibold text-blue-600">{stats.postsCount}</div>
               <div className="text-xs text-gray-400">פוסטים</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold text-blue-600">0</div>
+              <div className="text-lg font-semibold text-blue-600">{stats.commentsCount}</div>
               <div className="text-xs text-gray-400">תגובות</div>
             </div>
           </div>
