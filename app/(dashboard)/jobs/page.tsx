@@ -1,0 +1,322 @@
+'use client';
+
+import { useState } from 'react';
+
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: 'full-time' | 'part-time' | 'freelance' | 'internship';
+  description: string;
+  salary?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  poster: { firstName: string; lastName: string };
+  createdAt: string;
+  isActive: boolean;
+}
+
+const typeLabels: Record<string, string> = {
+  'full-time': 'משרה מלאה',
+  'part-time': 'משרה חלקית',
+  'freelance': 'פרילנס',
+  'internship': 'התמחות',
+};
+
+const typeColors: Record<string, string> = {
+  'full-time': 'bg-green-100 text-green-700',
+  'part-time': 'bg-blue-100 text-blue-700',
+  'freelance': 'bg-purple-100 text-purple-700',
+  'internship': 'bg-orange-100 text-orange-700',
+};
+
+// Demo data
+const demoJobs: Job[] = [
+  {
+    id: '1',
+    title: 'Full Stack Developer',
+    company: 'TechStart הייטק',
+    location: 'תל אביב / היברידי',
+    type: 'full-time',
+    description: 'מחפשים מפתח/ת Full Stack עם ניסיון ב-React ו-Node.js. עבודה בצוות דינמי, אתגרים מעניינים, אפשרות לעבודה מהבית.',
+    salary: '25,000-35,000 ₪',
+    contactEmail: 'jobs@techstart.co.il',
+    poster: { firstName: 'רועי', lastName: 'כהן' },
+    createdAt: '2025-11-20',
+    isActive: true,
+  },
+  {
+    id: '2',
+    title: 'מנהל/ת שיווק דיגיטלי',
+    company: 'דיגיטל פלוס',
+    location: 'חדרה',
+    type: 'full-time',
+    description: 'דרוש/ה מנהל/ת שיווק דיגיטלי עם ניסיון בניהול קמפיינים, SEO, ורשתות חברתיות. הזדמנות לצמיחה מקצועית.',
+    salary: '18,000-22,000 ₪',
+    contactPhone: '054-1234567',
+    poster: { firstName: 'מיכל', lastName: 'לוי' },
+    createdAt: '2025-11-18',
+    isActive: true,
+  },
+  {
+    id: '3',
+    title: 'מעצב/ת גרפי - פרילנס',
+    company: 'עצמאי',
+    location: 'מרחוק',
+    type: 'freelance',
+    description: 'מחפש/ת מעצב/ת גרפי/ת לפרויקטים שונים. עבודה גמישה, תשלום לפי פרויקט.',
+    contactEmail: 'design@gmail.com',
+    poster: { firstName: 'דנה', lastName: 'אברהם' },
+    createdAt: '2025-11-15',
+    isActive: true,
+  },
+  {
+    id: '4',
+    title: 'סטודנט/ית למשרד רואי חשבון',
+    company: 'כהן ושות\' רואי חשבון',
+    location: 'נתניה',
+    type: 'internship',
+    description: 'מחפשים סטודנט/ית לחשבונאות לעבודה במשרה חלקית. אפשרות לקביעות.',
+    salary: '50 ₪ לשעה',
+    contactEmail: 'hr@cohen-cpa.co.il',
+    poster: { firstName: 'יוסי', lastName: 'כהן' },
+    createdAt: '2025-11-10',
+    isActive: true,
+  },
+];
+
+export default function JobsPage() {
+  const [jobs, setJobs] = useState<Job[]>(demoJobs);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [filterType, setFilterType] = useState<string>('all');
+  const [newJob, setNewJob] = useState({
+    title: '',
+    company: '',
+    location: '',
+    type: 'full-time' as const,
+    description: '',
+    salary: '',
+    contactEmail: '',
+    contactPhone: '',
+  });
+
+  const filteredJobs = filterType === 'all'
+    ? jobs
+    : jobs.filter(j => j.type === filterType);
+
+  const handleCreate = () => {
+    if (!newJob.title.trim() || !newJob.company.trim() || !newJob.description.trim()) return;
+
+    const job: Job = {
+      id: Date.now().toString(),
+      ...newJob,
+      poster: { firstName: 'אני', lastName: '' },
+      createdAt: new Date().toISOString().split('T')[0],
+      isActive: true,
+    };
+
+    setJobs([job, ...jobs]);
+    setShowCreateForm(false);
+    setNewJob({
+      title: '',
+      company: '',
+      location: '',
+      type: 'full-time',
+      description: '',
+      salary: '',
+      contactEmail: '',
+      contactPhone: '',
+    });
+  };
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto" dir="rtl">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">לוח דרושים</h1>
+          <p className="text-gray-600">משרות מחברי המחזור, לחברי המחזור</p>
+        </div>
+        <button
+          onClick={() => setShowCreateForm(!showCreateForm)}
+          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
+        >
+          <span>💼</span> פרסם משרה
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white rounded-lg p-4 shadow-sm border text-center">
+          <div className="text-2xl font-bold text-green-600">{jobs.filter(j => j.type === 'full-time').length}</div>
+          <div className="text-xs text-gray-600">משרות מלאות</div>
+        </div>
+        <div className="bg-white rounded-lg p-4 shadow-sm border text-center">
+          <div className="text-2xl font-bold text-blue-600">{jobs.filter(j => j.type === 'part-time').length}</div>
+          <div className="text-xs text-gray-600">משרות חלקיות</div>
+        </div>
+        <div className="bg-white rounded-lg p-4 shadow-sm border text-center">
+          <div className="text-2xl font-bold text-purple-600">{jobs.filter(j => j.type === 'freelance').length}</div>
+          <div className="text-xs text-gray-600">פרילנס</div>
+        </div>
+        <div className="bg-white rounded-lg p-4 shadow-sm border text-center">
+          <div className="text-2xl font-bold text-orange-600">{jobs.filter(j => j.type === 'internship').length}</div>
+          <div className="text-xs text-gray-600">התמחויות</div>
+        </div>
+      </div>
+
+      {/* Filter */}
+      <div className="flex gap-2 mb-6 flex-wrap">
+        <button
+          onClick={() => setFilterType('all')}
+          className={`px-4 py-2 rounded-lg text-sm ${filterType === 'all' ? 'bg-gray-800 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+        >
+          הכל ({jobs.length})
+        </button>
+        {Object.entries(typeLabels).map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => setFilterType(key)}
+            className={`px-4 py-2 rounded-lg text-sm ${filterType === key ? 'bg-gray-800 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Create Job Form */}
+      {showCreateForm && (
+        <div className="bg-white rounded-lg p-6 shadow-sm border mb-6">
+          <h3 className="font-semibold mb-4">פרסום משרה חדשה</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <input
+              type="text"
+              placeholder="כותרת המשרה *"
+              value={newJob.title}
+              onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
+              className="border rounded-lg px-4 py-2"
+            />
+            <input
+              type="text"
+              placeholder="שם החברה *"
+              value={newJob.company}
+              onChange={(e) => setNewJob({ ...newJob, company: e.target.value })}
+              className="border rounded-lg px-4 py-2"
+            />
+            <input
+              type="text"
+              placeholder="מיקום"
+              value={newJob.location}
+              onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
+              className="border rounded-lg px-4 py-2"
+            />
+            <select
+              value={newJob.type}
+              onChange={(e) => setNewJob({ ...newJob, type: e.target.value as any })}
+              className="border rounded-lg px-4 py-2"
+            >
+              {Object.entries(typeLabels).map(([key, label]) => (
+                <option key={key} value={key}>{label}</option>
+              ))}
+            </select>
+            <input
+              type="text"
+              placeholder="שכר (אופציונלי)"
+              value={newJob.salary}
+              onChange={(e) => setNewJob({ ...newJob, salary: e.target.value })}
+              className="border rounded-lg px-4 py-2"
+            />
+            <input
+              type="email"
+              placeholder="אימייל ליצירת קשר"
+              value={newJob.contactEmail}
+              onChange={(e) => setNewJob({ ...newJob, contactEmail: e.target.value })}
+              className="border rounded-lg px-4 py-2"
+            />
+          </div>
+          <textarea
+            placeholder="תיאור המשרה *"
+            value={newJob.description}
+            onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
+            className="w-full border rounded-lg px-4 py-2 mb-4 h-24 resize-none"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={handleCreate}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+            >
+              פרסם משרה
+            </button>
+            <button
+              onClick={() => setShowCreateForm(false)}
+              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
+            >
+              ביטול
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Jobs List */}
+      <div className="space-y-4">
+        {filteredJobs.map((job) => (
+          <div key={job.id} className="bg-white rounded-lg p-6 shadow-sm border hover:shadow-md transition-shadow">
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <h3 className="font-semibold text-lg">{job.title}</h3>
+                <p className="text-gray-600">{job.company}</p>
+              </div>
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${typeColors[job.type]}`}>
+                {typeLabels[job.type]}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-3">
+              {job.location && (
+                <span className="flex items-center gap-1">
+                  📍 {job.location}
+                </span>
+              )}
+              {job.salary && (
+                <span className="flex items-center gap-1">
+                  💰 {job.salary}
+                </span>
+              )}
+            </div>
+
+            <p className="text-gray-700 mb-4">{job.description}</p>
+
+            <div className="flex flex-wrap gap-4 pt-3 border-t">
+              {job.contactEmail && (
+                <a
+                  href={`mailto:${job.contactEmail}`}
+                  className="text-blue-600 hover:underline text-sm flex items-center gap-1"
+                >
+                  ✉️ {job.contactEmail}
+                </a>
+              )}
+              {job.contactPhone && (
+                <a
+                  href={`tel:${job.contactPhone}`}
+                  className="text-blue-600 hover:underline text-sm flex items-center gap-1"
+                >
+                  📞 {job.contactPhone}
+                </a>
+              )}
+              <span className="text-sm text-gray-500 mr-auto">
+                פורסם ע"י {job.poster.firstName} {job.poster.lastName} • {job.createdAt}
+              </span>
+            </div>
+          </div>
+        ))}
+
+        {filteredJobs.length === 0 && (
+          <div className="text-center py-12 text-gray-500">
+            <p className="text-4xl mb-2">💼</p>
+            <p>אין משרות בקטגוריה זו כרגע</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

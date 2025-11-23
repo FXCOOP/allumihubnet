@@ -34,6 +34,10 @@ model User {
   businessProfiles BusinessProfile[]
   threadParticipants DirectMessageThreadParticipant[]
   sentMessages     DirectMessage[]
+  polls            Poll[]
+  pollVotes        PollVote[]
+  jobs             Job[]
+  memories         Memory[]
 }
 
 model School {
@@ -59,6 +63,9 @@ model Batch {
   users  UserBatch[]
   posts  Post[]
   events Event[]
+  polls  Poll[]
+  jobs   Job[]
+  memories Memory[]
 }
 
 model UserBatch {
@@ -174,4 +181,76 @@ model DirectMessage {
 
   thread DirectMessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
   sender User                @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+// Polls & Statistics
+model Poll {
+  id        String   @id @default(cuid())
+  batchId   String
+  authorId  String
+  question  String
+  endsAt    DateTime?
+  createdAt DateTime @default(now())
+
+  batch   Batch        @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  author  User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  options PollOption[]
+}
+
+model PollOption {
+  id        String   @id @default(cuid())
+  pollId    String
+  text      String
+  createdAt DateTime @default(now())
+
+  poll  Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes PollVote[]
+}
+
+model PollVote {
+  id        String   @id @default(cuid())
+  optionId  String
+  userId    String
+  createdAt DateTime @default(now())
+
+  option PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([optionId, userId])
+}
+
+// Job Board
+model Job {
+  id          String   @id @default(cuid())
+  batchId     String
+  posterId    String
+  title       String
+  company     String
+  location    String?
+  type        String   @default("full-time") // "full-time" | "part-time" | "freelance" | "internship"
+  description String
+  salary      String?
+  contactEmail String?
+  contactPhone String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime?
+
+  batch  Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  poster User  @relation(fields: [posterId], references: [id], onDelete: Cascade)
+}
+
+// Memories - On This Day
+model Memory {
+  id        String   @id @default(cuid())
+  batchId   String
+  authorId  String
+  title     String
+  content   String
+  imageUrl  String?
+  memoryDate DateTime
+  createdAt DateTime @default(now())
+
+  batch  Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
