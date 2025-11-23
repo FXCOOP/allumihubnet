@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface NavbarProps {
   user: {
@@ -15,6 +15,14 @@ interface NavbarProps {
 export default function Navbar({ user }: NavbarProps) {
   const pathname = usePathname()
   const [showMenu, setShowMenu] = useState(false)
+  const [profileImage, setProfileImage] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch('/api/users/profile')
+      .then(res => res.json())
+      .then(data => setProfileImage(data.avatarUrl || data.image || null))
+      .catch(console.error)
+  }, [])
 
   const navLinks = [
     { name: 'בית', href: '/feed', icon: 'fas fa-home' },
@@ -60,9 +68,19 @@ export default function Navbar({ user }: NavbarProps) {
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold hover:bg-blue-700 transition-colors"
+            className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center text-sm font-semibold hover:ring-2 hover:ring-blue-300 transition-all"
           >
-            {user.firstName[0]}{user.lastName[0]}
+            {profileImage ? (
+              <img
+                src={profileImage}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-blue-600 text-white flex items-center justify-center">
+                {user.firstName[0]}{user.lastName[0]}
+              </div>
+            )}
           </button>
 
           {showMenu && (
