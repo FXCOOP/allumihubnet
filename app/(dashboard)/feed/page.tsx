@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 
 interface Post {
   id: string
@@ -51,12 +52,17 @@ function timeAgo(date: string) {
 }
 
 export default function FeedPage() {
+  const { data: session } = useSession()
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [newPost, setNewPost] = useState({ type: 'general', title: '', content: '' })
   const [submitting, setSubmitting] = useState(false)
   const [commentText, setCommentText] = useState<Record<string, string>>({})
+
+  const userInitials = session?.user?.firstName && session?.user?.lastName
+    ? `${session.user.firstName[0]}${session.user.lastName[0]}`
+    : '?'
 
   useEffect(() => {
     fetchPosts()
@@ -133,7 +139,7 @@ export default function FeedPage() {
         <div className="p-4">
           <div className="flex gap-3">
             <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-              דכ
+              {userInitials}
             </div>
             <button
               onClick={() => setShowForm(!showForm)}

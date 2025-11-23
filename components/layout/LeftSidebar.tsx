@@ -16,20 +16,13 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
 
   const menuItems = [
     { name: 'פיד', href: '/feed', icon: 'fas fa-newspaper' },
-    { name: 'אירועים', href: '/events', icon: 'fas fa-calendar-check', badge: 3 },
+    { name: 'אירועים', href: '/events', icon: 'fas fa-calendar-check' },
     { name: 'עסקים', href: '/directory', icon: 'fas fa-store' },
     { name: 'הודעות', href: '/messages', icon: 'fas fa-comments' },
   ]
 
-  // Demo members list
-  const members = [
-    { name: 'דוד כהן', initials: 'דכ', color: 'bg-blue-600', online: true },
-    { name: 'רונית לוי', initials: 'רל', color: 'bg-red-600', online: true },
-    { name: 'מיכל אברהם', initials: 'מא', color: 'bg-emerald-600', online: true },
-    { name: 'שרה גולן', initials: 'שג', color: 'bg-purple-600', online: false, lastSeen: 'לפני 15 דק׳' },
-    { name: 'עומר שפירא', initials: 'עש', color: 'bg-orange-600', online: false, lastSeen: 'לפני שעה' },
-  ]
-
+  // TODO: Replace with real data from API
+  const members: Array<{ name: string; initials: string; color: string; online: boolean; lastSeen?: string }> = []
   const onlineCount = members.filter(m => m.online).length
 
   return (
@@ -49,11 +42,11 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
           )}
           <div className="flex justify-center gap-6 mt-4 pt-4 border-t border-gray-200">
             <div className="text-center">
-              <div className="text-lg font-semibold text-blue-600">127</div>
+              <div className="text-lg font-semibold text-blue-600">0</div>
               <div className="text-xs text-gray-400">צפיות</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold text-blue-600">89</div>
+              <div className="text-lg font-semibold text-blue-600">0</div>
               <div className="text-xs text-gray-400">חברים</div>
             </div>
           </div>
@@ -75,11 +68,6 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
             >
               <i className={`${item.icon} w-4`}></i>
               <span>{item.name}</span>
-              {item.badge && (
-                <span className="mr-auto bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                  {item.badge}
-                </span>
-              )}
             </Link>
           ))}
         </div>

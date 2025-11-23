@@ -1,6 +1,10 @@
 'use client'
 
 export default function RightSidebar() {
+  // TODO: Replace with real data from API
+  const birthdays: Array<{ name: string; initials: string; date: string }> = []
+  const events: Array<{ day: string; month: string; title: string; attendees: number }> = []
+
   return (
     <aside className="hidden lg:block sticky top-20 h-fit space-y-4">
       {/* Birthdays */}
@@ -10,18 +14,24 @@ export default function RightSidebar() {
           ימי הולדת
         </div>
         <div className="p-3">
-          <div className="flex items-center gap-2.5 p-2 bg-orange-50 rounded-lg">
-            <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-semibold">
-              לב
-            </div>
-            <div className="flex-1">
-              <div className="text-sm font-semibold">לירון ביטון</div>
-              <div className="text-xs text-gray-500">היום</div>
-            </div>
-            <button className="px-3 py-1.5 bg-orange-500 text-white text-xs font-medium rounded-md hover:bg-orange-600 transition-colors">
-              ברך
-            </button>
-          </div>
+          {birthdays.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-2">אין ימי הולדת היום</p>
+          ) : (
+            birthdays.map((birthday, i) => (
+              <div key={i} className="flex items-center gap-2.5 p-2 bg-orange-50 rounded-lg mb-2 last:mb-0">
+                <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-semibold">
+                  {birthday.initials}
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold">{birthday.name}</div>
+                  <div className="text-xs text-gray-500">{birthday.date}</div>
+                </div>
+                <button className="px-3 py-1.5 bg-orange-500 text-white text-xs font-medium rounded-md hover:bg-orange-600 transition-colors">
+                  ברך
+                </button>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -31,27 +41,25 @@ export default function RightSidebar() {
           <i className="fas fa-calendar-alt text-blue-600"></i>
           אירועים קרובים
         </div>
-        <div className="p-3 space-y-3">
-          <div className="flex gap-3">
-            <div className="w-11 text-center bg-blue-50 rounded-md p-1.5">
-              <div className="text-lg font-bold text-blue-600">15</div>
-              <div className="text-xs text-blue-600">דצמ</div>
+        <div className="p-3">
+          {events.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-2">אין אירועים קרובים</p>
+          ) : (
+            <div className="space-y-3">
+              {events.map((event, i) => (
+                <div key={i} className={`flex gap-3 ${i > 0 ? 'pt-3 border-t border-gray-100' : ''}`}>
+                  <div className="w-11 text-center bg-blue-50 rounded-md p-1.5">
+                    <div className="text-lg font-bold text-blue-600">{event.day}</div>
+                    <div className="text-xs text-blue-600">{event.month}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold">{event.title}</div>
+                    <div className="text-xs text-gray-400">{event.attendees} מגיעים</div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div>
-              <div className="text-sm font-semibold">מפגש חברים</div>
-              <div className="text-xs text-gray-400">15 מגיעים</div>
-            </div>
-          </div>
-          <div className="flex gap-3 pt-3 border-t border-gray-100">
-            <div className="w-11 text-center bg-blue-50 rounded-md p-1.5">
-              <div className="text-lg font-bold text-blue-600">28</div>
-              <div className="text-xs text-blue-600">דצמ</div>
-            </div>
-            <div>
-              <div className="text-sm font-semibold">מסיבת סוף שנה</div>
-              <div className="text-xs text-gray-400">30 מגיעים</div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
