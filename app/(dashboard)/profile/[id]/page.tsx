@@ -83,23 +83,25 @@ export default async function ViewProfilePage({
       </div>
 
       {/* Bio */}
-      {user.bio && (
-        <div className="card p-4">
-          <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
-            <i className="fas fa-user text-blue-600"></i>
-            אודות
-          </h2>
+      <div className="card p-4">
+        <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
+          <i className="fas fa-user text-blue-600"></i>
+          אודות
+        </h2>
+        {user.bio ? (
           <p className="text-sm text-gray-700 whitespace-pre-wrap">{user.bio}</p>
-        </div>
-      )}
+        ) : (
+          <p className="text-sm text-gray-400 italic">לא הוזן מידע</p>
+        )}
+      </div>
 
       {/* Links */}
-      {(user.linkedinUrl || user.websiteUrl) && (
-        <div className="card p-4">
-          <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
-            <i className="fas fa-link text-blue-600"></i>
-            קישורים
-          </h2>
+      <div className="card p-4">
+        <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
+          <i className="fas fa-link text-blue-600"></i>
+          קישורים
+        </h2>
+        {(user.linkedinUrl || user.websiteUrl) ? (
           <div className="space-y-2">
             {user.linkedinUrl && (
               <a
@@ -124,16 +126,18 @@ export default async function ViewProfilePage({
               </a>
             )}
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-sm text-gray-400 italic">לא הוזנו קישורים</p>
+        )}
+      </div>
 
       {/* Networking */}
-      {(user.canHelpWith || user.lookingFor) && (
-        <div className="card p-4">
-          <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
-            <i className="fas fa-handshake text-blue-600"></i>
-            נטוורקינג
-          </h2>
+      <div className="card p-4">
+        <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
+          <i className="fas fa-handshake text-blue-600"></i>
+          נטוורקינג
+        </h2>
+        {(user.canHelpWith || user.lookingFor) ? (
           <div className="space-y-3">
             {user.canHelpWith && (
               <div>
@@ -148,8 +152,10 @@ export default async function ViewProfilePage({
               </div>
             )}
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-sm text-gray-400 italic">לא הוזן מידע</p>
+        )}
+      </div>
     </div>
   )
 }
