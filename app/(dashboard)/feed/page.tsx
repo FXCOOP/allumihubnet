@@ -293,16 +293,25 @@ export default function FeedPage() {
 
           {!showForm && (
             <div className="flex gap-2 mt-3 pt-3 border-t border-gray-200">
-              <button className="flex-1 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center gap-1.5">
+              <button
+                onClick={() => setShowForm(true)}
+                className="flex-1 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center gap-1.5"
+              >
                 <i className="fas fa-image text-emerald-600"></i>
                 תמונה
               </button>
-              <button className="flex-1 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center gap-1.5">
+              <a
+                href="/events"
+                className="flex-1 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center gap-1.5"
+              >
                 <i className="fas fa-calendar text-blue-600"></i>
                 אירוע
-              </button>
+              </a>
               <button
-                onClick={() => setShowForm(true)}
+                onClick={() => {
+                  setNewPost({ ...newPost, type: 'help' })
+                  setShowForm(true)
+                }}
                 className="flex-1 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-center gap-1.5"
               >
                 <i className="fas fa-hands-helping text-red-600"></i>
