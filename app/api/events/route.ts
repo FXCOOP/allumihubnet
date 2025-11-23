@@ -54,14 +54,14 @@ export async function POST(req: Request) {
     if (!batch) {
       const school = await prisma.school.upsert({
         where: { id: 'hadera-high' },
-        create: { id: 'hadera-high', name: 'תיכון חדרה' },
+        create: { id: 'hadera-high', name: 'תיכון חדרה', city: 'חדרה', country: 'ישראל' },
         update: {},
       })
       batch = await prisma.batch.create({
         data: {
           id: 'hadera-2003',
-          name: 'מחזור חדרה 2003',
-          graduationYear: 2003,
+          displayName: 'מחזור חדרה 2003',
+          year: 2003,
           schoolId: school.id,
         },
       })
