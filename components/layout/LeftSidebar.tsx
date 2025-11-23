@@ -29,10 +29,10 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
     <aside className="hidden lg:block sticky top-20 h-fit space-y-4">
       {/* Profile Card */}
       <div className="card overflow-hidden">
-        <div className="h-15 bg-gradient-to-bl from-blue-600 to-purple-600"></div>
+        <div className="h-16 bg-gradient-to-br from-blue-600 to-purple-600"></div>
         <div className="px-4 pb-4 text-center">
-          <div className="w-16 h-16 rounded-full bg-blue-600 border-3 border-white -mt-8 mx-auto flex items-center justify-center text-white text-xl font-semibold">
-            {user.firstName[0]}{user.lastName[0]}
+          <div className="w-16 h-16 rounded-full bg-blue-600 border-4 border-white -mt-8 mx-auto flex items-center justify-center text-white text-xl font-semibold shadow-md">
+            {user.firstName?.[0] || ''}{user.lastName?.[0] || ''}
           </div>
           <h3 className="mt-3 font-semibold text-gray-900">
             {user.firstName} {user.lastName}
