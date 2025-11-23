@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 
 interface Post {
   id: string
@@ -337,12 +338,14 @@ export default function FeedPage() {
               <div key={post.id} className="p-4">
                 {/* Post Header */}
                 <div className="flex gap-3 mb-3">
-                  <div className={`w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center text-white text-xs font-semibold flex-shrink-0`}>
+                  <Link href={`/profile/${post.author.id}`} className={`w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 hover:opacity-80 transition-opacity`}>
                     {post.author.firstName[0]}{post.author.lastName[0]}
-                  </div>
+                  </Link>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold">{post.author.firstName} {post.author.lastName}</span>
+                      <Link href={`/profile/${post.author.id}`} className="text-sm font-semibold hover:text-blue-600 transition-colors">
+                        {post.author.firstName} {post.author.lastName}
+                      </Link>
                       {typeInfo && (
                         <span className={`text-xs px-2 py-0.5 rounded ${typeInfo.class}`}>
                           {typeInfo.label}
