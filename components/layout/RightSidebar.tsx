@@ -1,9 +1,40 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+
+interface Event {
+  id: string
+  title: string
+  startsAt: string
+  rsvps: Array<{ status: string }>
+}
+
 export default function RightSidebar() {
-  // TODO: Replace with real data from API
-  const birthdays: Array<{ name: string; initials: string; date: string }> = []
-  const events: Array<{ day: string; month: string; title: string; attendees: number }> = []
+  const [birthdays, setBirthdays] = useState<Array<{ name: string; initials: string; date: string }>>([])
+  const [events, setEvents] = useState<Array<{ day: string; month: string; title: string; attendees: number }>>([])
+
+  useEffect(() => {
+    // Fetch upcoming events
+    fetch('/api/events')
+      .then(res => res.json())
+      .then((data: Event[]) => {
+        const now = new Date()
+        const upcoming = data
+          .filter(e => new Date(e.startsAt) >= now)
+          .slice(0, 3)
+          .map(e => {
+            const date = new Date(e.startsAt)
+            return {
+              day: date.getDate().toString(),
+              month: date.toLocaleDateString('he-IL', { month: 'short' }),
+              title: e.title,
+              attendees: e.rsvps?.filter(r => r.status === 'going').length || 0
+            }
+          })
+        setEvents(upcoming)
+      })
+      .catch(console.error)
+  }, [])
 
   return (
     <aside className="hidden lg:block sticky top-20 h-fit space-y-4">

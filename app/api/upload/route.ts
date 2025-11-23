@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { randomUUID } from 'crypto';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,24 +35,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File too large (max 5MB)' }, { status: 400 });
     }
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads');
-    await mkdir(uploadsDir, { recursive: true });
-
-    // Generate unique filename
-    const ext = file.name.split('.').pop();
-    const filename = `${randomUUID()}.${ext}`;
-    const filepath = join(uploadsDir, filename);
-
-    // Write file
+    // Convert file to base64
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    await writeFile(filepath, buffer);
+    const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-    // Return the URL
-    const url = `/uploads/${filename}`;
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(base64, {
+      folder: 'alumnihub',
+    });
 
-    return NextResponse.json({ url });
+    return NextResponse.json({ url: result.secure_url });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
