@@ -65,10 +65,12 @@ export default function RightSidebar() {
 
       {/* Footer */}
       <div className="text-center text-xs text-gray-400 py-4">
-        AlumniHub © 2024<br />
-        <a href="#" className="text-blue-600 hover:underline">תנאי שימוש</a>
+        AlumniHub © 2025<br />
+        <a href="/terms" className="text-blue-600 hover:underline">תנאי שימוש</a>
         {' • '}
-        <a href="#" className="text-blue-600 hover:underline">פרטיות</a>
+        <a href="/privacy" className="text-blue-600 hover:underline">פרטיות</a>
+        {' • '}
+        <a href="/cookies" className="text-blue-600 hover:underline">עוגיות</a>
       </div>
     </aside>
   )
