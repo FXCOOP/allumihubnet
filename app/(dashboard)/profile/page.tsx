@@ -105,12 +105,12 @@ export default function ProfilePage() {
       {/* Profile Header */}
       <div className="card overflow-hidden">
         <div className="h-24 bg-gradient-to-br from-blue-600 to-purple-600"></div>
-        <div className="px-6 pb-6">
-          <div className="flex flex-col sm:flex-row items-center gap-4 -mt-10">
-            <div className="w-20 h-20 rounded-full bg-blue-600 border-4 border-white flex items-center justify-center text-white text-2xl font-semibold shadow-md flex-shrink-0">
+        <div className="px-6 pb-6 pt-12">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="w-20 h-20 rounded-full bg-blue-600 border-4 border-white flex items-center justify-center text-white text-2xl font-semibold shadow-md flex-shrink-0 -mt-16">
               {userInitials}
             </div>
-            <div className="text-center sm:text-right pt-2">
+            <div className="text-center sm:text-right">
               <h1 className="text-xl font-bold text-gray-900">{profile.firstName} {profile.lastName}</h1>
               {profile.currentRole && (
                 <p className="text-sm text-gray-500">{profile.currentRole}</p>
