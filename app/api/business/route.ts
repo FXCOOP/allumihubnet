@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { businessProfileSchema } from '@/lib/validations'
 
 export async function GET(req: Request) {
   const session = await getServerSession(authOptions)
@@ -14,19 +13,8 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const category = searchParams.get('category')
 
-  // Get users in the batch
-  const batchUsers = await prisma.userBatch.findMany({
-    where: { batchId: session.user.batchId || 'hadera-2003' },
-    select: { userId: true },
-  })
-
-  const userIds = batchUsers.map(bu => bu.userId)
-
   const businesses = await prisma.businessProfile.findMany({
-    where: {
-      userId: { in: userIds },
-      ...(category && category !== 'all' ? { category } : {}),
-    },
+    where: category && category !== 'all' ? { category } : undefined,
     include: {
       user: {
         select: { id: true, firstName: true, lastName: true },
@@ -47,18 +35,24 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json()
-    const validation = businessProfileSchema.safeParse(body)
+    const { businessName, category, shortDescription, websiteUrl, phone, city, country } = body
 
-    if (!validation.success) {
+    if (!businessName || !category || !shortDescription) {
       return NextResponse.json(
-        { error: validation.error.errors[0].message },
+        { error: 'נדרשים שם עסק, קטגוריה ותיאור' },
         { status: 400 }
       )
     }
 
     const business = await prisma.businessProfile.create({
       data: {
-        ...validation.data,
+        businessName,
+        category,
+        shortDescription,
+        websiteUrl: websiteUrl || null,
+        phone: phone || null,
+        city: city || null,
+        country: country || null,
         userId: session.user.id,
       },
       include: {

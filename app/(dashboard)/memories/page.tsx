@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Memory {
   id: string;
@@ -13,56 +13,36 @@ interface Memory {
   yearsAgo: number;
 }
 
-// Demo data
-const demoMemories: Memory[] = [
-  {
-    id: '1',
-    title: 'טיול שנתי לאילת',
-    content: 'זוכרים את הטיול המטורף לאילת? הלילה במדבר, האש, השירים... רגעים שלא נשכח לעולם!',
-    imageUrl: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400',
-    memoryDate: '2002-11-23',
-    author: { firstName: 'רונית', lastName: 'שמעון' },
-    createdAt: '2025-11-20',
-    yearsAgo: 23,
-  },
-  {
-    id: '2',
-    title: 'מסיבת סיום כיתה י"ב',
-    content: 'המסיבה הכי טובה שהייתה! כולם בבגדים יפים, הריקודים, הצחוקים... מי זוכר את השיר שהושמע הכי הרבה?',
-    imageUrl: 'https://images.unsplash.com/photo-1529543544277-28d08d9dea3c?w=400',
-    memoryDate: '2003-06-15',
-    author: { firstName: 'אורי', lastName: 'דוד' },
-    createdAt: '2025-11-18',
-    yearsAgo: 22,
-  },
-  {
-    id: '3',
-    title: 'אליפות הכדורגל הבין-כיתתית',
-    content: 'הניצחון ההיסטורי שלנו! 3-2 בדקה ה-90. מי זוכר מי הבקיע?',
-    memoryDate: '2002-03-10',
-    author: { firstName: 'גל', lastName: 'ברק' },
-    createdAt: '2025-11-15',
-    yearsAgo: 23,
-  },
-  {
-    id: '4',
-    title: 'יום הולדת הפתעה למורה',
-    content: 'ההפתעה שעשינו למורה רחל ליום ההולדת שלה. היא כל כך התרגשה שבכתה!',
-    memoryDate: '2001-11-23',
-    author: { firstName: 'נועה', lastName: 'כהן' },
-    createdAt: '2025-11-10',
-    yearsAgo: 24,
-  },
-];
-
 export default function MemoriesPage() {
-  const [memories, setMemories] = useState<Memory[]>(demoMemories);
+  const [memories, setMemories] = useState<Memory[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [newMemory, setNewMemory] = useState({
     title: '',
     content: '',
     memoryDate: '',
+    imageUrl: '',
   });
+  const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    fetchMemories();
+  }, []);
+
+  const fetchMemories = async () => {
+    try {
+      const res = await fetch('/api/memories');
+      if (res.ok) {
+        const data = await res.json();
+        setMemories(data);
+      }
+    } catch (error) {
+      console.error('Error fetching memories:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Find memories from today in previous years
   const today = new Date();
@@ -74,24 +54,64 @@ export default function MemoriesPage() {
     return memDate.getMonth() === todayMonth && memDate.getDate() === todayDay;
   });
 
-  const handleCreate = () => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const { url } = await res.json();
+        setNewMemory({ ...newMemory, imageUrl: url });
+      } else {
+        alert('שגיאה בהעלאת התמונה');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('שגיאה בהעלאת התמונה');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleCreate = async () => {
     if (!newMemory.title.trim() || !newMemory.content.trim() || !newMemory.memoryDate) return;
 
-    const memDate = new Date(newMemory.memoryDate);
-    const yearsAgo = today.getFullYear() - memDate.getFullYear();
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/memories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMemory),
+      });
 
-    const memory: Memory = {
-      id: Date.now().toString(),
-      ...newMemory,
-      author: { firstName: 'אני', lastName: '' },
-      createdAt: today.toISOString().split('T')[0],
-      yearsAgo,
-    };
-
-    setMemories([memory, ...memories]);
-    setShowCreateForm(false);
-    setNewMemory({ title: '', content: '', memoryDate: '' });
+      if (res.ok) {
+        fetchMemories();
+        setShowCreateForm(false);
+        setNewMemory({ title: '', content: '', memoryDate: '', imageUrl: '' });
+      }
+    } catch (error) {
+      console.error('Error creating memory:', error);
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-gray-500">טוען...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-4xl mx-auto" dir="rtl">
@@ -156,12 +176,27 @@ export default function MemoriesPage() {
               min="2000-01-01"
             />
           </div>
+          <div className="mb-4">
+            <label className="block text-sm text-gray-600 mb-1">תמונה (אופציונלי)</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={uploading}
+              className="border rounded-lg px-4 py-2 w-full"
+            />
+            {uploading && <span className="text-sm text-gray-500">מעלה...</span>}
+            {newMemory.imageUrl && (
+              <img src={newMemory.imageUrl} alt="Preview" className="mt-2 h-32 object-cover rounded" />
+            )}
+          </div>
           <div className="flex gap-2">
             <button
               onClick={handleCreate}
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+              disabled={submitting}
+              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 disabled:opacity-50"
             >
-              פרסם זיכרון
+              {submitting ? 'יוצר...' : 'פרסם זיכרון'}
             </button>
             <button
               onClick={() => setShowCreateForm(false)}

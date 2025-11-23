@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { eventSchema } from '@/lib/validations'
 
 export async function GET() {
   const session = await getServerSession(authOptions)
@@ -12,10 +11,7 @@ export async function GET() {
   }
 
   const events = await prisma.event.findMany({
-    where: {
-      batchId: session.user.batchId || 'hadera-2003',
-      startsAt: { gte: new Date() },
-    },
+    where: { batchId: session.user.batchId || 'hadera-2003' },
     include: {
       creator: {
         select: { id: true, firstName: true, lastName: true },
@@ -43,31 +39,44 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json()
-    const validation = eventSchema.safeParse(body)
+    const { title, description, locationText, startsAt, endsAt, maxAttendees } = body
 
-    if (!validation.success) {
+    if (!title || !startsAt) {
       return NextResponse.json(
-        { error: validation.error.errors[0].message },
+        { error: 'נדרשים כותרת ותאריך התחלה' },
         { status: 400 }
       )
     }
 
+    // Ensure batch exists
+    const batchId = session.user.batchId || 'hadera-2003'
+    const batch = await prisma.batch.findUnique({ where: { id: batchId } })
+    if (!batch) {
+      return NextResponse.json({ error: 'מחזור לא נמצא - נסה להתנתק ולהתחבר מחדש' }, { status: 400 })
+    }
+
     const event = await prisma.event.create({
       data: {
-        title: validation.data.title,
-        description: validation.data.description,
-        locationText: validation.data.locationText,
-        startsAt: new Date(validation.data.startsAt),
-        endsAt: validation.data.endsAt ? new Date(validation.data.endsAt) : null,
-        maxAttendees: validation.data.maxAttendees,
+        title,
+        description: description || null,
+        locationText: locationText || null,
+        startsAt: new Date(startsAt),
+        endsAt: endsAt ? new Date(endsAt) : null,
+        maxAttendees: maxAttendees || null,
         creatorId: session.user.id,
-        batchId: session.user.batchId || 'hadera-2003',
+        batchId,
       },
       include: {
         creator: {
           select: { id: true, firstName: true, lastName: true },
         },
-        rsvps: true,
+        rsvps: {
+          include: {
+            user: {
+              select: { id: true, firstName: true, lastName: true },
+            },
+          },
+        },
       },
     })
 

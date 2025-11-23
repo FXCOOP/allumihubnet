@@ -66,9 +66,14 @@ export default function EventsPage() {
         ))
         setNewEvent({ title: '', description: '', locationText: '', startsAt: '', endsAt: '', maxAttendees: '' })
         setShowForm(false)
+      } else {
+        const data = await res.json()
+        console.error('Error response:', data)
+        alert(data.error || 'שגיאה ביצירת אירוע')
       }
     } catch (error) {
       console.error('Error creating event:', error)
+      alert('שגיאה ביצירת אירוע')
     } finally {
       setSubmitting(false)
     }

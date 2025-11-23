@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { profileSchema } from '@/lib/validations'
 
 export async function GET() {
   const session = await getServerSession(authOptions)
@@ -27,10 +26,12 @@ export async function GET() {
       websiteUrl: true,
       canHelpWith: true,
       lookingFor: true,
+      birthday: true,
     },
   })
 
-  return NextResponse.json(user)
+  // Map avatarUrl to image for frontend compatibility
+  return NextResponse.json({ ...user, image: user?.avatarUrl })
 }
 
 export async function PUT(req: Request) {
@@ -42,18 +43,24 @@ export async function PUT(req: Request) {
 
   try {
     const body = await req.json()
-    const validation = profileSchema.safeParse(body)
-
-    if (!validation.success) {
-      return NextResponse.json(
-        { error: validation.error.errors[0].message },
-        { status: 400 }
-      )
-    }
+    const { firstName, lastName, city, country, currentRole, bio, linkedinUrl, websiteUrl, canHelpWith, lookingFor, birthday, image } = body
 
     const user = await prisma.user.update({
       where: { id: session.user.id },
-      data: validation.data,
+      data: {
+        firstName,
+        lastName,
+        city: city || null,
+        country: country || null,
+        currentRole: currentRole || null,
+        bio: bio || null,
+        linkedinUrl: linkedinUrl || null,
+        websiteUrl: websiteUrl || null,
+        canHelpWith: canHelpWith || null,
+        lookingFor: lookingFor || null,
+        birthday: birthday ? new Date(birthday) : null,
+        avatarUrl: image || null,
+      },
     })
 
     return NextResponse.json(user)

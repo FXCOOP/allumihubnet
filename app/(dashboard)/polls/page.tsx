@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface PollOption {
   id: string;
@@ -21,107 +21,82 @@ interface Poll {
   userVote?: string;
 }
 
-// Demo data
-const demoPolls: Poll[] = [
-  {
-    id: '1',
-    question: 'איפה אתם גרים היום?',
-    options: [
-      { id: '1a', text: 'חדרה והסביבה', votes: 45, percentage: 36 },
-      { id: '1b', text: 'תל אביב והמרכז', votes: 52, percentage: 42 },
-      { id: '1c', text: 'ירושלים', votes: 12, percentage: 10 },
-      { id: '1d', text: 'חו"ל', votes: 15, percentage: 12 },
-    ],
-    totalVotes: 124,
-    author: { firstName: 'דני', lastName: 'כהן' },
-    createdAt: '2025-11-20',
-    hasVoted: true,
-    userVote: '1b',
-  },
-  {
-    id: '2',
-    question: 'באיזה תחום אתם עובדים?',
-    options: [
-      { id: '2a', text: 'הייטק', votes: 38, percentage: 40 },
-      { id: '2b', text: 'רפואה/בריאות', votes: 18, percentage: 19 },
-      { id: '2c', text: 'חינוך', votes: 15, percentage: 16 },
-      { id: '2d', text: 'עסקים/יזמות', votes: 12, percentage: 13 },
-      { id: '2e', text: 'אחר', votes: 12, percentage: 12 },
-    ],
-    totalVotes: 95,
-    author: { firstName: 'מיכל', lastName: 'לוי' },
-    createdAt: '2025-11-18',
-    hasVoted: false,
-  },
-  {
-    id: '3',
-    question: 'מתי נעשה מפגש מחזור הבא?',
-    options: [
-      { id: '3a', text: 'דצמבר 2025', votes: 28, percentage: 35 },
-      { id: '3b', text: 'ינואר 2026', votes: 32, percentage: 40 },
-      { id: '3c', text: 'פברואר 2026', votes: 20, percentage: 25 },
-    ],
-    totalVotes: 80,
-    author: { firstName: 'יוסי', lastName: 'אברהם' },
-    createdAt: '2025-11-15',
-    endsAt: '2025-12-01',
-    hasVoted: false,
-  },
-];
-
 export default function PollsPage() {
-  const [polls, setPolls] = useState<Poll[]>(demoPolls);
+  const [polls, setPolls] = useState<Poll[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newQuestion, setNewQuestion] = useState('');
   const [newOptions, setNewOptions] = useState(['', '', '']);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleVote = (pollId: string, optionId: string) => {
-    setPolls(polls.map(poll => {
-      if (poll.id === pollId && !poll.hasVoted) {
-        const newTotal = poll.totalVotes + 1;
-        return {
-          ...poll,
-          hasVoted: true,
-          userVote: optionId,
-          totalVotes: newTotal,
-          options: poll.options.map(opt => {
-            const newVotes = opt.id === optionId ? opt.votes + 1 : opt.votes;
-            return {
-              ...opt,
-              votes: newVotes,
-              percentage: Math.round((newVotes / newTotal) * 100),
-            };
-          }),
-        };
+  useEffect(() => {
+    fetchPolls();
+  }, []);
+
+  const fetchPolls = async () => {
+    try {
+      const res = await fetch('/api/polls');
+      if (res.ok) {
+        const data = await res.json();
+        setPolls(data);
       }
-      return poll;
-    }));
+    } catch (error) {
+      console.error('Error fetching polls:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCreatePoll = () => {
+  const handleVote = async (pollId: string, optionId: string) => {
+    try {
+      const res = await fetch('/api/polls/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pollId, optionId }),
+      });
+
+      if (res.ok) {
+        fetchPolls(); // Refresh polls to get updated vote counts
+      }
+    } catch (error) {
+      console.error('Error voting:', error);
+    }
+  };
+
+  const handleCreatePoll = async () => {
     if (!newQuestion.trim() || newOptions.filter(o => o.trim()).length < 2) return;
 
-    const validOptions = newOptions.filter(o => o.trim());
-    const newPoll: Poll = {
-      id: Date.now().toString(),
-      question: newQuestion,
-      options: validOptions.map((text, i) => ({
-        id: `new-${i}`,
-        text,
-        votes: 0,
-        percentage: 0,
-      })),
-      totalVotes: 0,
-      author: { firstName: 'אני', lastName: '' },
-      createdAt: new Date().toISOString().split('T')[0],
-      hasVoted: false,
-    };
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/polls', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: newQuestion,
+          options: newOptions.filter(o => o.trim()),
+        }),
+      });
 
-    setPolls([newPoll, ...polls]);
-    setShowCreateForm(false);
-    setNewQuestion('');
-    setNewOptions(['', '', '']);
+      if (res.ok) {
+        fetchPolls();
+        setShowCreateForm(false);
+        setNewQuestion('');
+        setNewOptions(['', '', '']);
+      }
+    } catch (error) {
+      console.error('Error creating poll:', error);
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-gray-500">טוען...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-4xl mx-auto" dir="rtl">
@@ -194,9 +169,10 @@ export default function PollsPage() {
           <div className="flex gap-2">
             <button
               onClick={handleCreatePoll}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              disabled={submitting}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
-              פרסם סקר
+              {submitting ? 'יוצר...' : 'פרסם סקר'}
             </button>
             <button
               onClick={() => setShowCreateForm(false)}

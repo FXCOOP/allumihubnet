@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Job {
   id: string;
@@ -31,65 +31,12 @@ const typeColors: Record<string, string> = {
   'internship': 'bg-orange-100 text-orange-700',
 };
 
-// Demo data
-const demoJobs: Job[] = [
-  {
-    id: '1',
-    title: 'Full Stack Developer',
-    company: 'TechStart הייטק',
-    location: 'תל אביב / היברידי',
-    type: 'full-time',
-    description: 'מחפשים מפתח/ת Full Stack עם ניסיון ב-React ו-Node.js. עבודה בצוות דינמי, אתגרים מעניינים, אפשרות לעבודה מהבית.',
-    salary: '25,000-35,000 ₪',
-    contactEmail: 'jobs@techstart.co.il',
-    poster: { firstName: 'רועי', lastName: 'כהן' },
-    createdAt: '2025-11-20',
-    isActive: true,
-  },
-  {
-    id: '2',
-    title: 'מנהל/ת שיווק דיגיטלי',
-    company: 'דיגיטל פלוס',
-    location: 'חדרה',
-    type: 'full-time',
-    description: 'דרוש/ה מנהל/ת שיווק דיגיטלי עם ניסיון בניהול קמפיינים, SEO, ורשתות חברתיות. הזדמנות לצמיחה מקצועית.',
-    salary: '18,000-22,000 ₪',
-    contactPhone: '054-1234567',
-    poster: { firstName: 'מיכל', lastName: 'לוי' },
-    createdAt: '2025-11-18',
-    isActive: true,
-  },
-  {
-    id: '3',
-    title: 'מעצב/ת גרפי - פרילנס',
-    company: 'עצמאי',
-    location: 'מרחוק',
-    type: 'freelance',
-    description: 'מחפש/ת מעצב/ת גרפי/ת לפרויקטים שונים. עבודה גמישה, תשלום לפי פרויקט.',
-    contactEmail: 'design@gmail.com',
-    poster: { firstName: 'דנה', lastName: 'אברהם' },
-    createdAt: '2025-11-15',
-    isActive: true,
-  },
-  {
-    id: '4',
-    title: 'סטודנט/ית למשרד רואי חשבון',
-    company: 'כהן ושות\' רואי חשבון',
-    location: 'נתניה',
-    type: 'internship',
-    description: 'מחפשים סטודנט/ית לחשבונאות לעבודה במשרה חלקית. אפשרות לקביעות.',
-    salary: '50 ₪ לשעה',
-    contactEmail: 'hr@cohen-cpa.co.il',
-    poster: { firstName: 'יוסי', lastName: 'כהן' },
-    createdAt: '2025-11-10',
-    isActive: true,
-  },
-];
-
 export default function JobsPage() {
-  const [jobs, setJobs] = useState<Job[]>(demoJobs);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [filterType, setFilterType] = useState<string>('all');
+  const [submitting, setSubmitting] = useState(false);
   const [newJob, setNewJob] = useState({
     title: '',
     company: '',
@@ -101,34 +48,67 @@ export default function JobsPage() {
     contactPhone: '',
   });
 
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      const res = await fetch('/api/jobs');
+      if (res.ok) {
+        const data = await res.json();
+        setJobs(data);
+      }
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredJobs = filterType === 'all'
     ? jobs
     : jobs.filter(j => j.type === filterType);
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!newJob.title.trim() || !newJob.company.trim() || !newJob.description.trim()) return;
 
-    const job: Job = {
-      id: Date.now().toString(),
-      ...newJob,
-      poster: { firstName: 'אני', lastName: '' },
-      createdAt: new Date().toISOString().split('T')[0],
-      isActive: true,
-    };
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/jobs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newJob),
+      });
 
-    setJobs([job, ...jobs]);
-    setShowCreateForm(false);
-    setNewJob({
-      title: '',
-      company: '',
-      location: '',
-      type: 'full-time',
-      description: '',
-      salary: '',
-      contactEmail: '',
-      contactPhone: '',
-    });
+      if (res.ok) {
+        fetchJobs();
+        setShowCreateForm(false);
+        setNewJob({
+          title: '',
+          company: '',
+          location: '',
+          type: 'full-time',
+          description: '',
+          salary: '',
+          contactEmail: '',
+          contactPhone: '',
+        });
+      }
+    } catch (error) {
+      console.error('Error creating job:', error);
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-gray-500">טוען...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-4xl mx-auto" dir="rtl">
@@ -243,9 +223,10 @@ export default function JobsPage() {
           <div className="flex gap-2">
             <button
               onClick={handleCreate}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+              disabled={submitting}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50"
             >
-              פרסם משרה
+              {submitting ? 'יוצר...' : 'פרסם משרה'}
             </button>
             <button
               onClick={() => setShowCreateForm(false)}

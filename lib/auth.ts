@@ -37,13 +37,35 @@ export const authOptions: NextAuthOptions = {
           throw new Error('סיסמה שגויה')
         }
 
+        // Auto-associate with default batch if not already
+        let batchId = user.batches[0]?.batchId
+        if (!batchId) {
+          try {
+            const defaultBatch = await prisma.batch.findFirst({
+              where: { id: 'hadera-2003' },
+            })
+            if (defaultBatch) {
+              await prisma.userBatch.create({
+                data: {
+                  userId: user.id,
+                  batchId: defaultBatch.id,
+                },
+              })
+              batchId = defaultBatch.id
+            }
+          } catch (e) {
+            // Batch association already exists or other error
+            console.log('Batch association error:', e)
+          }
+        }
+
         return {
           id: user.id,
           email: user.email,
           name: `${user.firstName} ${user.lastName}`,
           firstName: user.firstName,
           lastName: user.lastName,
-          batchId: user.batches[0]?.batchId || null,
+          batchId: batchId || 'hadera-2003',
         }
       },
     }),

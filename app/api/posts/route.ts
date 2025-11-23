@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { postSchema } from '@/lib/validations'
 
 export async function GET() {
   const session = await getServerSession(authOptions)
@@ -42,20 +41,28 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json()
-    const validation = postSchema.safeParse(body)
+    const { content, type } = body
 
-    if (!validation.success) {
+    if (!content || !content.trim()) {
       return NextResponse.json(
-        { error: validation.error.errors[0].message },
+        { error: 'נדרש תוכן לפוסט' },
         { status: 400 }
       )
     }
 
+    // Ensure batch exists
+    const batchId = session.user.batchId || 'hadera-2003'
+    const batch = await prisma.batch.findUnique({ where: { id: batchId } })
+    if (!batch) {
+      return NextResponse.json({ error: 'מחזור לא נמצא - נסה להתנתק ולהתחבר מחדש' }, { status: 400 })
+    }
+
     const post = await prisma.post.create({
       data: {
-        ...validation.data,
+        content,
+        type: type || 'general',
         authorId: session.user.id,
-        batchId: session.user.batchId || 'hadera-2003',
+        batchId,
       },
       include: {
         author: {
