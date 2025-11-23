@@ -61,7 +61,7 @@ export async function POST(req: Request) {
         author: {
           select: { id: true, firstName: true, lastName: true, avatarUrl: true, currentRole: true },
         },
-        comments: [],
+        comments: true,
         _count: { select: { comments: true } },
       },
     })
