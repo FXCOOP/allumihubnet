@@ -5,7 +5,7 @@ import { prisma } from '@/lib/db'
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { postId: string } }
 ) {
   const session = await getServerSession(authOptions)
 
@@ -13,7 +13,7 @@ export async function POST(
     return NextResponse.json({ error: 'לא מחובר' }, { status: 401 })
   }
 
-  const postId = params.id
+  const postId = params.postId
 
   try {
     // Check if already liked
