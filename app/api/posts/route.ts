@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json()
-    const { content, type } = body
+    const { content, type, title, imageUrl } = body
 
     if (!content || !content.trim()) {
       return NextResponse.json(
@@ -82,9 +82,10 @@ export async function POST(req: Request) {
 
     const post = await prisma.post.create({
       data: {
-        title: content.substring(0, 50),
+        title: title || content.substring(0, 50),
         content,
         type: type || 'general',
+        imageUrl: imageUrl || null,
         authorId: session.user.id,
         batchId,
       },

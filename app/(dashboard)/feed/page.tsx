@@ -8,6 +8,7 @@ interface Post {
   type: string
   title: string
   content: string
+  imageUrl?: string
   createdAt: string
   isLiked: boolean
   likesCount: number
@@ -32,6 +33,8 @@ const postTypes = [
   { value: 'memory', label: 'זיכרון', class: 'bg-orange-100 text-orange-700' },
   { value: 'help', label: 'צריך עזרה', class: 'bg-red-100 text-red-700' },
   { value: 'news', label: 'חדשות', class: 'bg-green-100 text-green-700' },
+  { value: 'recommendation', label: '📚 המלצה', class: 'bg-purple-100 text-purple-700' },
+  { value: 'thanks', label: '🙏 תודה', class: 'bg-pink-100 text-pink-700' },
 ]
 
 const avatarColors = ['bg-blue-600', 'bg-red-600', 'bg-purple-600', 'bg-orange-600', 'bg-emerald-600']
@@ -74,10 +77,36 @@ export default function FeedPage() {
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [newPost, setNewPost] = useState({ type: 'general', title: '', content: '' })
+  const [newPost, setNewPost] = useState({ type: 'general', title: '', content: '', imageUrl: '' })
   const [submitting, setSubmitting] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [commentText, setCommentText] = useState<Record<string, string>>({})
   const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({})
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (res.ok) {
+        const { url } = await res.json()
+        setNewPost({ ...newPost, imageUrl: url })
+      }
+    } catch (error) {
+      console.error('Upload error:', error)
+    } finally {
+      setUploading(false)
+    }
+  }
 
   const handleLike = async (postId: string) => {
     try {
@@ -126,7 +155,7 @@ export default function FeedPage() {
       if (res.ok) {
         const post = await res.json()
         setPosts([post, ...posts])
-        setNewPost({ type: 'general', title: '', content: '' })
+        setNewPost({ type: 'general', title: '', content: '', imageUrl: '' })
         setShowForm(false)
       }
     } catch (error) {
@@ -213,10 +242,40 @@ export default function FeedPage() {
                 rows={3}
                 required
               />
+
+              {/* Image Upload */}
+              <div className="flex items-center gap-3">
+                <label className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    disabled={uploading}
+                  />
+                  <i className={`fas fa-image ${uploading ? 'text-gray-400' : 'text-emerald-600'}`}></i>
+                  <span className="text-sm text-gray-600">
+                    {uploading ? 'מעלה...' : 'הוסף תמונה'}
+                  </span>
+                </label>
+                {newPost.imageUrl && (
+                  <div className="relative">
+                    <img src={newPost.imageUrl} alt="Preview" className="h-12 w-12 object-cover rounded-lg" />
+                    <button
+                      type="button"
+                      onClick={() => setNewPost({ ...newPost, imageUrl: '' })}
+                      className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={submitting || uploading}
                   className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
                 >
                   {submitting ? 'מפרסם...' : 'פרסום'}
@@ -299,6 +358,17 @@ export default function FeedPage() {
                 >
                   {post.content}
                 </p>
+
+                {/* Post Image */}
+                {post.imageUrl && (
+                  <div className="mt-3 rounded-lg overflow-hidden">
+                    <img
+                      src={post.imageUrl}
+                      alt="Post image"
+                      className="w-full max-h-96 object-cover"
+                    />
+                  </div>
+                )}
 
                 {/* Post Actions - Unique Alumni Style */}
                 <div className="flex items-center gap-4 pt-3 mt-3 border-t border-gray-100">
