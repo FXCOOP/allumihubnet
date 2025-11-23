@@ -24,6 +24,14 @@ model User {
   canHelpWith  String?
   lookingFor   String?
   birthday     DateTime?
+  latitude     Float?
+  longitude    Float?
+  lastLocationUpdate DateTime?
+  systemRole   String    @default("user") // "user" | "moderator" | "admin" | "super_admin"
+  isActive     Boolean   @default(true)
+  isBanned     Boolean   @default(false)
+  banReason    String?
+  lastLoginAt  DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
@@ -40,6 +48,9 @@ model User {
   pollVotes        PollVote[]
   jobs             Job[]
   memories         Memory[]
+  mentions         Mention[]
+  adminLogs        AdminLog[]
+  ads              Ad[]
 }
 
 model School {
@@ -269,4 +280,75 @@ model Memory {
 
   batch  Batch @relation(fields: [batchId], references: [id], onDelete: Cascade)
   author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+// @Mentions System
+model Mention {
+  id           String   @id @default(cuid())
+  userId       String
+  postId       String?
+  commentId    String?
+  mentionedBy  String
+  isRead       Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Admin Activity Logs
+model AdminLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  action    String   // "ban_user" | "delete_post" | "approve_ad" | "change_role" etc.
+  targetType String  // "user" | "post" | "comment" | "ad" | "event"
+  targetId  String
+  details   String?
+  createdAt DateTime @default(now())
+
+  admin User @relation(fields: [adminId], references: [id], onDelete: Cascade)
+}
+
+// Advertising System
+model Ad {
+  id           String   @id @default(cuid())
+  advertiserId String
+  title        String
+  content      String
+  imageUrl     String?
+  linkUrl      String?
+  placement    String   @default("feed") // "feed" | "sidebar" | "banner" | "popup"
+  targetBatches String[] // Target specific batches or empty for all
+  budget       Float    @default(0)
+  costPerClick Float    @default(0)
+  costPerView  Float    @default(0)
+  status       String   @default("pending") // "pending" | "active" | "paused" | "rejected" | "completed"
+  priority     Int      @default(0)
+  startsAt     DateTime?
+  endsAt       DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  advertiser User @relation(fields: [advertiserId], references: [id], onDelete: Cascade)
+  analytics  AdAnalytics[]
+}
+
+model AdAnalytics {
+  id        String   @id @default(cuid())
+  adId      String
+  eventType String   // "view" | "click" | "conversion"
+  userId    String?
+  metadata  String?
+  createdAt DateTime @default(now())
+
+  ad Ad @relation(fields: [adId], references: [id], onDelete: Cascade)
+}
+
+// System Settings
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  type      String   @default("string") // "string" | "boolean" | "number" | "json"
+  category  String   @default("general") // "general" | "ads" | "notifications" | "security"
+  updatedAt DateTime @updatedAt
 }

@@ -102,387 +102,274 @@ export default function DirectoryPage() {
     }
   }
 
+  // Category icons mapping
+  const categoryIcons: Record<string, { icon: string; color: string }> = {
+    'טכנולוגיה ומחשבים': { icon: 'fas fa-laptop-code', color: 'bg-blue-100 text-blue-600' },
+    'שיווק ופרסום': { icon: 'fas fa-bullhorn', color: 'bg-pink-100 text-pink-600' },
+    'עורכי דין': { icon: 'fas fa-balance-scale', color: 'bg-purple-100 text-purple-600' },
+    'בריאות ורפואה': { icon: 'fas fa-heartbeat', color: 'bg-red-100 text-red-600' },
+    'רואי חשבון': { icon: 'fas fa-calculator', color: 'bg-green-100 text-green-600' },
+    'יועצי מס': { icon: 'fas fa-file-invoice-dollar', color: 'bg-emerald-100 text-emerald-600' },
+    'עיצוב גרפי': { icon: 'fas fa-palette', color: 'bg-orange-100 text-orange-600' },
+    'נדל"ן': { icon: 'fas fa-home', color: 'bg-amber-100 text-amber-600' },
+    'פסיכולוגיה וייעוץ': { icon: 'fas fa-brain', color: 'bg-indigo-100 text-indigo-600' },
+    'חינוך והדרכה': { icon: 'fas fa-graduation-cap', color: 'bg-cyan-100 text-cyan-600' },
+    'מסעדנות ואירוח': { icon: 'fas fa-utensils', color: 'bg-yellow-100 text-yellow-600' },
+    'ביטוח': { icon: 'fas fa-shield-alt', color: 'bg-teal-100 text-teal-600' },
+    'פיננסים והשקעות': { icon: 'fas fa-chart-line', color: 'bg-lime-100 text-lime-600' },
+    'בנייה ושיפוצים': { icon: 'fas fa-hammer', color: 'bg-stone-100 text-stone-600' },
+    'רכב': { icon: 'fas fa-car', color: 'bg-slate-100 text-slate-600' },
+    'ספורט וכושר': { icon: 'fas fa-running', color: 'bg-rose-100 text-rose-600' },
+    'יופי וטיפוח': { icon: 'fas fa-spa', color: 'bg-fuchsia-100 text-fuchsia-600' },
+    'אופנה': { icon: 'fas fa-tshirt', color: 'bg-violet-100 text-violet-600' },
+    'צילום ווידאו': { icon: 'fas fa-camera', color: 'bg-sky-100 text-sky-600' },
+    'אירועים והפקות': { icon: 'fas fa-glass-cheers', color: 'bg-pink-100 text-pink-600' },
+    'תיירות ונסיעות': { icon: 'fas fa-plane', color: 'bg-blue-100 text-blue-600' },
+    'חשמל ואינסטלציה': { icon: 'fas fa-bolt', color: 'bg-yellow-100 text-yellow-600' },
+    'גינון ונוף': { icon: 'fas fa-leaf', color: 'bg-green-100 text-green-600' },
+    'אחר': { icon: 'fas fa-briefcase', color: 'bg-gray-100 text-gray-600' },
+  }
+
+  const getIconForCategory = (category: string) => {
+    return categoryIcons[category] || categoryIcons['אחר']
+  }
+
+  // Popular categories for filter buttons
+  const popularCategories = ['טכנולוגיה ומחשבים', 'שיווק ופרסום', 'עורכי דין', 'בריאות ורפואה', 'נדל"ן']
+
   if (loading) return <div className="text-center py-8">טוען...</div>
 
   return (
-    <div>
-      {/* Hero Header */}
-      <div className="card overflow-hidden mb-6">
-        <div className="bg-gradient-to-l from-blue-600 via-purple-600 to-indigo-600 px-6 py-8 relative">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-                <i className="fas fa-store"></i>
-                מדריך עסקים
-              </h1>
-              <p className="text-white/80 text-sm mt-2">מצא עסקים ושירותים של בוגרי המחזור</p>
-            </div>
-            <button
-              onClick={() => setShowForm(!showForm)}
-              className="bg-white text-purple-600 px-5 py-2.5 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 shadow-lg"
-            >
-              <i className={`fas ${showForm ? 'fa-times' : 'fa-plus'}`}></i>
-              {showForm ? 'ביטול' : 'הוספת עסק'}
-            </button>
-          </div>
+    <div dir="rtl">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">עסקים של חברי המחזור</h1>
+          <p className="text-gray-600">מצא שירותים מקצועיים מחברי המחזור</p>
         </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+        >
+          <span>💼</span> {showForm ? 'ביטול' : 'הוסף עסק'}
+        </button>
       </div>
 
-      {showForm && (
-        <div className="card mb-6 overflow-hidden shadow-xl">
-          {/* Beautiful Header */}
-          <div className="bg-gradient-to-l from-blue-600 via-purple-600 to-indigo-600 px-6 py-6 relative overflow-hidden">
-            <div className="absolute inset-0 bg-black/10"></div>
-            <div className="absolute top-0 left-0 w-full h-full">
-              <div className="absolute top-4 left-4 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
-              <div className="absolute bottom-4 right-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-            </div>
-            <div className="relative">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                  <i className="fas fa-rocket text-white"></i>
-                </div>
-                <h3 className="font-bold text-xl text-white">הוספת עסק חדש</h3>
-              </div>
-              <p className="text-white/80 text-sm">שתף את העסק שלך עם חברי המחזור וקבל לקוחות חדשים</p>
-            </div>
-          </div>
+      {/* Filter Buttons */}
+      <div className="flex gap-2 mb-6 flex-wrap">
+        <button
+          onClick={() => setFilter('all')}
+          className={`px-4 py-2 rounded-lg text-sm ${filter === 'all' ? 'bg-gray-800 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+        >
+          הכל ({businesses.length})
+        </button>
+        {popularCategories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setFilter(cat)}
+            className={`px-4 py-2 rounded-lg text-sm ${filter === cat ? 'bg-gray-800 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+          >
+            {cat.split(' ')[0]}
+          </button>
+        ))}
+      </div>
 
-          <form onSubmit={handleCreateBusiness} className="p-6">
-            {/* Business Name - Hero Field */}
-            <div className="mb-6">
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-800 mb-3">
-                <div className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-building text-purple-600 text-xs"></i>
-                </div>
-                שם העסק
-                <span className="text-red-500">*</span>
-              </label>
+      {/* Create Business Form */}
+      {showForm && (
+        <div className="bg-white rounded-lg p-6 shadow-sm border mb-6">
+          <h3 className="font-semibold mb-4">הוספת עסק חדש</h3>
+          <form onSubmit={handleCreateBusiness} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
+                placeholder="שם העסק *"
                 value={newBusiness.businessName}
                 onChange={(e) => setNewBusiness({ ...newBusiness, businessName: e.target.value })}
-                className="w-full px-4 py-4 bg-gradient-to-l from-gray-50 to-white border-2 border-gray-100 rounded-2xl text-base font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder:text-gray-400"
-                placeholder="מה שם העסק שלך?"
+                className="border rounded-lg px-4 py-2"
                 required
               />
-            </div>
-
-            {/* Category */}
-            <div className="mb-6">
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-800 mb-3">
-                <div className="w-6 h-6 bg-indigo-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-tags text-indigo-600 text-xs"></i>
-                </div>
-                קטגוריה
-              </label>
-              <div className="relative">
-                <select
-                  value={newBusiness.category}
-                  onChange={(e) => setNewBusiness({ ...newBusiness, category: e.target.value })}
-                  className="w-full px-4 py-4 bg-gradient-to-l from-gray-50 to-white border-2 border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all appearance-none cursor-pointer"
-                >
-                  {categories.slice(1).map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <i className="fas fa-chevron-down text-gray-400 text-sm"></i>
-                </div>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="mb-6">
-              <label className="flex items-center gap-2 text-sm font-bold text-gray-800 mb-3">
-                <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-align-right text-blue-600 text-xs"></i>
-                </div>
-                תיאור העסק
-                <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                value={newBusiness.shortDescription}
-                onChange={(e) => setNewBusiness({ ...newBusiness, shortDescription: e.target.value })}
-                className="w-full px-4 py-4 bg-gradient-to-l from-gray-50 to-white border-2 border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all resize-none placeholder:text-gray-400"
-                rows={4}
-                placeholder="ספר לנו על העסק שלך... מה אתה עושה? איך אתה יכול לעזור לחברי המחזור?"
-                required
+              <select
+                value={newBusiness.category}
+                onChange={(e) => setNewBusiness({ ...newBusiness, category: e.target.value })}
+                className="border rounded-lg px-4 py-2"
+              >
+                {categories.slice(1).map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+              <input
+                type="tel"
+                placeholder="טלפון"
+                value={newBusiness.phone}
+                onChange={(e) => setNewBusiness({ ...newBusiness, phone: e.target.value })}
+                className="border rounded-lg px-4 py-2"
+                dir="ltr"
+              />
+              <input
+                type="url"
+                placeholder="אתר אינטרנט"
+                value={newBusiness.websiteUrl}
+                onChange={(e) => setNewBusiness({ ...newBusiness, websiteUrl: e.target.value })}
+                className="border rounded-lg px-4 py-2"
+                dir="ltr"
+              />
+              <input
+                type="text"
+                placeholder="עיר"
+                value={newBusiness.city}
+                onChange={(e) => setNewBusiness({ ...newBusiness, city: e.target.value })}
+                className="border rounded-lg px-4 py-2 md:col-span-2"
               />
             </div>
-
-            {/* Contact Grid */}
-            <div className="bg-gray-50 rounded-2xl p-5 mb-6">
-              <div className="flex items-center gap-2 mb-4">
-                <i className="fas fa-address-card text-gray-500"></i>
-                <span className="text-sm font-bold text-gray-700">פרטי התקשרות</span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="flex items-center gap-2 text-xs font-semibold text-gray-600 mb-2">
-                    <i className="fas fa-globe text-blue-500"></i>
-                    אתר אינטרנט
-                  </label>
-                  <input
-                    type="url"
-                    value={newBusiness.websiteUrl}
-                    onChange={(e) => setNewBusiness({ ...newBusiness, websiteUrl: e.target.value })}
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder:text-gray-400"
-                    placeholder="https://..."
-                    dir="ltr"
-                  />
-                </div>
-                <div>
-                  <label className="flex items-center gap-2 text-xs font-semibold text-gray-600 mb-2">
-                    <i className="fas fa-phone text-green-500"></i>
-                    טלפון
-                  </label>
-                  <input
-                    type="tel"
-                    value={newBusiness.phone}
-                    onChange={(e) => setNewBusiness({ ...newBusiness, phone: e.target.value })}
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder:text-gray-400"
-                    placeholder="050-000-0000"
-                    dir="ltr"
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="flex items-center gap-2 text-xs font-semibold text-gray-600 mb-2">
-                    <i className="fas fa-map-marker-alt text-red-500"></i>
-                    עיר
-                  </label>
-                  <input
-                    type="text"
-                    value={newBusiness.city}
-                    onChange={(e) => setNewBusiness({ ...newBusiness, city: e.target.value })}
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all placeholder:text-gray-400"
-                    placeholder="איפה העסק ממוקם?"
-                  />
-                </div>
-              </div>
+            <textarea
+              placeholder="תיאור העסק *"
+              value={newBusiness.shortDescription}
+              onChange={(e) => setNewBusiness({ ...newBusiness, shortDescription: e.target.value })}
+              className="w-full border rounded-lg px-4 py-2 h-24 resize-none"
+              required
+            />
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              >
+                {submitting ? 'שומר...' : 'הוסף עסק'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
+              >
+                ביטול
+              </button>
             </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-4 bg-gradient-to-l from-blue-600 via-purple-600 to-indigo-600 text-white font-bold rounded-2xl hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-3 text-base"
-            >
-              {submitting ? (
-                <>
-                  <i className="fas fa-spinner fa-spin"></i>
-                  שומר את העסק...
-                </>
-              ) : (
-                <>
-                  <i className="fas fa-paper-plane"></i>
-                  פרסם את העסק
-                </>
-              )}
-            </button>
           </form>
         </div>
       )}
 
-      {/* Filter Section */}
-      <div className="mb-6 flex items-center gap-3">
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <i className="fas fa-filter"></i>
-          <span>סינון לפי:</span>
-        </div>
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm"
-        >
-          <option value="all">{categories[0]}</option>
-          {categories.slice(1).map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
-        <span className="text-sm text-gray-400">
-          {businesses.length} עסקים
-        </span>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Business Cards */}
+      <div className="space-y-4">
         {businesses.length === 0 ? (
-          <div className="card p-8 text-center text-gray-500 md:col-span-2">
-            <i className="fas fa-store text-4xl text-gray-300 mb-3"></i>
-            <p>אין עסקים בקטגוריה זו. הוסף את העסק שלך!</p>
+          <div className="text-center py-12 text-gray-500">
+            <p className="text-4xl mb-2">💼</p>
+            <p>אין עסקים בקטגוריה זו</p>
           </div>
         ) : (
-          businesses.map(business => (
-            <div
-              key={business.id}
-              className="card p-0 overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer"
-              onClick={() => setSelectedBusiness(business)}
-            >
-              {/* Header with gradient and icon */}
-              <div className="bg-gradient-to-l from-blue-600 to-purple-600 px-5 py-4 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-white/5 transform -skew-x-12 translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
-                <div className="flex items-start justify-between relative">
+          businesses.map(business => {
+            const iconData = getIconForCategory(business.category)
+            return (
+              <div
+                key={business.id}
+                className="bg-white rounded-lg p-6 shadow-sm border hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-start gap-4">
+                  {/* Category Icon */}
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${iconData.color}`}>
+                    <i className={`${iconData.icon} text-lg`}></i>
+                  </div>
+
+                  {/* Business Info */}
                   <div className="flex-1">
-                    <h3 className="font-bold text-white text-lg mb-1">{business.businessName}</h3>
-                    <div className="flex items-center gap-2 text-white/80 text-sm">
-                      <i className="fas fa-user-tie text-xs"></i>
-                      <span>{business.user.firstName} {business.user.lastName}</span>
-                    </div>
-                  </div>
-                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                    <i className="fas fa-building text-white text-xl"></i>
+                    <h3 className="font-semibold text-lg">{business.businessName}</h3>
+                    <p className="text-sm text-gray-500">{business.category}</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {business.user.firstName} {business.user.lastName}
+                    </p>
                   </div>
                 </div>
-                <div className="mt-3">
-                  <span className="text-xs bg-white/30 text-white px-3 py-1 rounded-full backdrop-blur-sm font-medium">
-                    {business.category}
-                  </span>
-                </div>
-              </div>
 
-              {/* Content */}
-              <div className="p-5">
-                <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
-                  {business.shortDescription}
-                </p>
-
-                {/* Contact info preview */}
-                <div className="flex items-center gap-4 text-sm text-gray-500">
-                  {business.city && (
-                    <span className="flex items-center gap-1">
-                      <i className="fas fa-map-marker-alt text-red-500 text-xs"></i>
-                      {business.city}
-                    </span>
-                  )}
+                {/* Action Buttons */}
+                <div className="flex gap-2 mt-4">
                   {business.phone && (
-                    <span className="flex items-center gap-1">
-                      <i className="fas fa-phone text-green-500 text-xs"></i>
-                      טלפון
-                    </span>
+                    <a
+                      href={`tel:${business.phone}`}
+                      className="flex-1 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors text-center"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      התקשר
+                    </a>
                   )}
-                </div>
-
-                {/* View details button */}
-                <div className="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
-                  <span className="text-xs text-gray-400">לחץ לפרטים נוספים</span>
-                  <span className="text-blue-600 text-sm font-medium">
-                    צפה בפרטים ←
-                  </span>
+                  {business.websiteUrl && (
+                    <a
+                      href={business.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors text-center"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      אתר
+                    </a>
+                  )}
+                  <button
+                    onClick={() => setSelectedBusiness(business)}
+                    className="flex-1 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    פרטים
+                  </button>
                 </div>
               </div>
-            </div>
-          ))
+            )
+          })
         )}
       </div>
 
       {/* Business Detail Modal */}
       {selectedBusiness && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedBusiness(null)}
-        >
-          <div
-            className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-            onClick={e => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="bg-gradient-to-l from-blue-600 via-purple-600 to-indigo-600 p-6 text-white relative">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedBusiness(null)}>
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="bg-blue-600 p-6 text-white">
               <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <h2 className="text-2xl font-bold mb-1">{selectedBusiness.businessName}</h2>
-                  <p className="text-white/90">
-                    <i className="fas fa-user-tie ml-2"></i>
-                    {selectedBusiness.user.firstName} {selectedBusiness.user.lastName}
-                  </p>
+                <div>
+                  <h2 className="text-2xl font-bold">{selectedBusiness.businessName}</h2>
+                  <p className="text-white/90 text-lg">{selectedBusiness.category}</p>
                 </div>
-                <button
-                  onClick={() => setSelectedBusiness(null)}
-                  className="text-white/80 hover:text-white text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
-                >
+                <button onClick={() => setSelectedBusiness(null)} className="text-white/80 hover:text-white text-2xl">
                   ×
                 </button>
               </div>
-              <div className="mt-4">
-                <span className="bg-white/20 px-4 py-1.5 rounded-full text-sm font-medium backdrop-blur-sm">
-                  {selectedBusiness.category}
-                </span>
+              <div className="mt-2 text-white/80">
+                {selectedBusiness.user.firstName} {selectedBusiness.user.lastName}
               </div>
             </div>
 
-            {/* Modal Content */}
             <div className="p-6">
-              {/* Description */}
-              <div className="mb-6">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <i className="fas fa-info-circle text-blue-500"></i>
-                  אודות העסק
-                </h3>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
-                  {selectedBusiness.shortDescription}
-                </p>
-              </div>
+              <h3 className="font-semibold mb-3">תיאור העסק</h3>
+              <p className="text-gray-700 whitespace-pre-wrap mb-6">{selectedBusiness.shortDescription}</p>
 
-              {/* Contact Info */}
-              <div className="mb-6">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <i className="fas fa-address-book text-blue-500"></i>
-                  פרטי התקשרות
-                </h3>
-                <div className="space-y-3">
-                  {selectedBusiness.city && (
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                        <i className="fas fa-map-marker-alt text-red-500"></i>
+              {(selectedBusiness.city || selectedBusiness.phone || selectedBusiness.websiteUrl) && (
+                <>
+                  <h3 className="font-semibold mb-3">יצירת קשר</h3>
+                  <div className="space-y-2 mb-6">
+                    {selectedBusiness.city && (
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <i className="fas fa-map-marker-alt"></i>
+                        {selectedBusiness.city}
                       </div>
-                      <div>
-                        <div className="text-xs text-gray-500">מיקום</div>
-                        <div className="font-medium text-gray-800">{selectedBusiness.city}</div>
-                      </div>
-                    </div>
-                  )}
-                  {selectedBusiness.phone && (
-                    <a
-                      href={`tel:${selectedBusiness.phone}`}
-                      className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-green-50 transition-colors"
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                        <i className="fas fa-phone text-green-500"></i>
-                      </div>
-                      <div>
-                        <div className="text-xs text-gray-500">טלפון</div>
-                        <div className="font-medium text-gray-800" dir="ltr">{selectedBusiness.phone}</div>
-                      </div>
-                    </a>
-                  )}
-                  {selectedBusiness.websiteUrl && (
-                    <a
-                      href={selectedBusiness.websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors"
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                        <i className="fas fa-globe text-blue-500"></i>
-                      </div>
-                      <div>
-                        <div className="text-xs text-gray-500">אתר אינטרנט</div>
-                        <div className="font-medium text-blue-600">לחץ לביקור באתר</div>
-                      </div>
-                    </a>
-                  )}
-                </div>
-              </div>
+                    )}
+                    {selectedBusiness.phone && (
+                      <a href={`tel:${selectedBusiness.phone}`} className="flex items-center gap-2 text-blue-600 hover:text-blue-800">
+                        <i className="fas fa-phone"></i>
+                        <span dir="ltr">{selectedBusiness.phone}</span>
+                      </a>
+                    )}
+                    {selectedBusiness.websiteUrl && (
+                      <a href={selectedBusiness.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:text-blue-800">
+                        <i className="fas fa-globe"></i>
+                        בקר באתר
+                      </a>
+                    )}
+                  </div>
+                </>
+              )}
 
-              {/* Action Buttons */}
               <div className="flex gap-3">
                 {selectedBusiness.phone && (
                   <a
                     href={`tel:${selectedBusiness.phone}`}
-                    className="flex-1 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-center"
                   >
-                    <i className="fas fa-phone"></i>
-                    התקשר עכשיו
+                    התקשר
                   </a>
                 )}
                 {selectedBusiness.websiteUrl && (
@@ -490,10 +377,9 @@ export default function DirectoryPage() {
                     href={selectedBusiness.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 py-3 bg-gradient-to-l from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                    className="flex-1 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors text-center"
                   >
-                    <i className="fas fa-external-link-alt"></i>
-                    בקר באתר
+                    אתר
                   </a>
                 )}
               </div>

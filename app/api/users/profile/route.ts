@@ -27,6 +27,7 @@ export async function GET() {
       canHelpWith: true,
       lookingFor: true,
       birthday: true,
+      systemRole: true,
     },
   })
 

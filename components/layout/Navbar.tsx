@@ -16,11 +16,15 @@ export default function Navbar({ user }: NavbarProps) {
   const pathname = usePathname()
   const [showMenu, setShowMenu] = useState(false)
   const [profileImage, setProfileImage] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     fetch('/api/users/profile')
       .then(res => res.json())
-      .then(data => setProfileImage(data.avatarUrl || data.image || null))
+      .then(data => {
+        setProfileImage(data.avatarUrl || data.image || null)
+        setIsAdmin(['admin', 'super_admin', 'moderator'].includes(data.systemRole))
+      })
       .catch(console.error)
   }, [])
 
@@ -99,6 +103,16 @@ export default function Navbar({ user }: NavbarProps) {
               >
                 המחזור שלי
               </Link>
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50"
+                  onClick={() => setShowMenu(false)}
+                >
+                  <i className="fas fa-shield-alt ml-2"></i>
+                  ניהול
+                </Link>
+              )}
               <hr className="my-2 border-gray-200" />
               <button
                 onClick={() => signOut({ callbackUrl: '/login' })}

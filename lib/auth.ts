@@ -68,6 +68,7 @@ export const authOptions: NextAuthOptions = {
           currentRole: user.currentRole,
           avatarUrl: user.avatarUrl,
           batchId: batchId || 'hadera-2003',
+          systemRole: user.systemRole,
         }
       },
     }),
