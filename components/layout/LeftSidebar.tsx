@@ -33,6 +33,7 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
   const [members, setMembers] = useState<Member[]>([])
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
   const [stats, setStats] = useState<UserStats>({ postsCount: 0, commentsCount: 0 })
+  const [profileImage, setProfileImage] = useState<string | null>(null)
 
   const menuItems = [
     { name: 'פיד', href: '/feed', icon: 'fas fa-newspaper' },
@@ -55,6 +56,12 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
       .then(res => res.json())
       .then(data => setStats(data))
       .catch(console.error)
+
+    // Fetch profile image
+    fetch('/api/users/profile')
+      .then(res => res.json())
+      .then(data => setProfileImage(data.avatarUrl || data.image || null))
+      .catch(console.error)
   }, [])
 
   const onlineCount = members.filter(m => m.online).length
@@ -66,10 +73,10 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
       <div className="card overflow-hidden">
         <div className="h-16 bg-gradient-to-br from-blue-600 to-purple-600"></div>
         <div className="px-4 pb-4 text-center">
-          {user.avatarUrl ? (
+          {profileImage ? (
             <div className="w-16 h-16 rounded-full border-4 border-white -mt-8 mx-auto shadow-md overflow-hidden">
               <img
-                src={user.avatarUrl}
+                src={profileImage}
                 alt="Profile"
                 className="w-full h-full object-cover object-center"
               />
