@@ -23,6 +23,8 @@ export async function GET() {
           lastName: true,
           avatarUrl: true,
           currentRole: true,
+          city: true,
+          country: true,
         },
       },
     },
@@ -34,6 +36,8 @@ export async function GET() {
     initials: `${ub.user.firstName[0]}${ub.user.lastName[0]}`,
     avatarUrl: ub.user.avatarUrl,
     currentRole: ub.user.currentRole,
+    city: ub.user.city,
+    country: ub.user.country,
     online: true, // In a real app, this would check actual online status
   }))
 

@@ -38,6 +38,7 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
     { name: 'אירועים', href: '/events', icon: 'fas fa-calendar-check' },
     { name: 'עסקים', href: '/directory', icon: 'fas fa-store' },
     { name: 'הודעות', href: '/messages', icon: 'fas fa-comments' },
+    { name: 'מפה', href: '/map', icon: 'fas fa-map-marked-alt' },
     { name: 'סקרים', href: '/polls', icon: 'fas fa-poll' },
     { name: 'זיכרונות', href: '/memories', icon: 'fas fa-camera-retro' },
     { name: 'דרושים', href: '/jobs', icon: 'fas fa-briefcase' },

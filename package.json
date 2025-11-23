@@ -13,12 +13,15 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@types/leaflet": "^1.9.21",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.8.0",
+    "leaflet": "^1.9.4",
     "next": "14.0.4",
     "next-auth": "^4.24.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-leaflet": "^4.2.1",
     "zod": "^3.22.4"
   },
   "prisma": {
