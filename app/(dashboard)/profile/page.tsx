@@ -144,16 +144,22 @@ export default function ProfilePage() {
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="relative -mt-10">
               {profile.image ? (
-                <img src={profile.image} alt="Profile" className="w-20 h-20 rounded-full border-4 border-white object-cover shadow-md" />
+                <div className="w-20 h-20 rounded-full border-4 border-white shadow-md overflow-hidden">
+                  <img
+                    src={profile.image}
+                    alt="Profile"
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
               ) : (
                 <div className="w-20 h-20 rounded-full bg-blue-600 border-4 border-white flex items-center justify-center text-white text-2xl font-semibold shadow-md">
                   {userInitials}
                 </div>
               )}
-              <label className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow cursor-pointer hover:bg-gray-100">
+              <label className="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow-lg cursor-pointer hover:bg-gray-100 transition-colors">
                 <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={uploading} />
                 {uploading ? (
-                  <span className="text-xs">...</span>
+                  <i className="fas fa-spinner fa-spin text-gray-600 text-xs"></i>
                 ) : (
                   <i className="fas fa-camera text-gray-600 text-xs"></i>
                 )}
