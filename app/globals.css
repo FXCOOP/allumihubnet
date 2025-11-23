@@ -119,3 +119,35 @@ body {
 .animate-shimmer {
   animation: shimmer 3s infinite;
 }
+
+@keyframes fadeText {
+  0%, 45% {
+    opacity: 1;
+  }
+  50%, 95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeTextDelay {
+  0%, 45% {
+    opacity: 0;
+  }
+  50%, 95% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-fade-text {
+  animation: fadeText 6s infinite;
+}
+
+.animate-fade-text-delay {
+  animation: fadeTextDelay 6s infinite;
+}

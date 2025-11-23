@@ -160,9 +160,10 @@ export default function ProfilePage() {
       <div className="card overflow-hidden">
         <div className="h-32 bg-gradient-to-br from-blue-600 to-purple-600 relative overflow-hidden">
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-white/20 text-4xl font-bold tracking-widest animate-pulse">
-              ALUMNIHUB
-            </span>
+            <div className="text-white/20 text-3xl font-bold tracking-widest text-center">
+              <span className="animate-fade-text inline-block">ALUMNIHUB</span>
+              <span className="animate-fade-text-delay inline-block absolute inset-0 flex items-center justify-center">תיכון חדרה | 2003</span>
+            </div>
           </div>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
         </div>
