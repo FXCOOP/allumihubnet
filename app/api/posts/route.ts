@@ -24,12 +24,22 @@ export async function GET() {
         },
         orderBy: { createdAt: 'asc' },
       },
-      _count: { select: { comments: true } },
+      likes: {
+        select: { userId: true },
+      },
+      _count: { select: { comments: true, likes: true } },
     },
     orderBy: { createdAt: 'desc' },
   })
 
-  return NextResponse.json(posts)
+  // Add isLiked flag for current user
+  const postsWithLikeStatus = posts.map(post => ({
+    ...post,
+    isLiked: post.likes.some(like => like.userId === session.user.id),
+    likesCount: post._count.likes,
+  }))
+
+  return NextResponse.json(postsWithLikeStatus)
 }
 
 export async function POST(req: Request) {
@@ -83,11 +93,12 @@ export async function POST(req: Request) {
           select: { id: true, firstName: true, lastName: true, avatarUrl: true, currentRole: true },
         },
         comments: true,
-        _count: { select: { comments: true } },
+        likes: true,
+        _count: { select: { comments: true, likes: true } },
       },
     })
 
-    return NextResponse.json(post, { status: 201 })
+    return NextResponse.json({ ...post, isLiked: false, likesCount: 0 }, { status: 201 })
   } catch (error) {
     console.error('Post creation error:', error)
     return NextResponse.json({ error: 'שגיאה ביצירת פוסט' }, { status: 500 })

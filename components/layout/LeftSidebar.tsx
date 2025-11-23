@@ -1,7 +1,17 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+
+interface Member {
+  id: string
+  name: string
+  initials: string
+  avatarUrl?: string
+  currentRole?: string
+  online: boolean
+}
 
 interface LeftSidebarProps {
   user: {
@@ -13,6 +23,9 @@ interface LeftSidebarProps {
 
 export default function LeftSidebar({ user }: LeftSidebarProps) {
   const pathname = usePathname()
+  const router = useRouter()
+  const [members, setMembers] = useState<Member[]>([])
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null)
 
   const menuItems = [
     { name: 'פיד', href: '/feed', icon: 'fas fa-newspaper' },
@@ -24,9 +37,15 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
     { name: 'דרושים', href: '/jobs', icon: 'fas fa-briefcase' },
   ]
 
-  // TODO: Replace with real data from API
-  const members: Array<{ name: string; initials: string; color: string; online: boolean; lastSeen?: string }> = []
+  useEffect(() => {
+    fetch('/api/batch/members')
+      .then(res => res.json())
+      .then(data => setMembers(data))
+      .catch(console.error)
+  }, [])
+
   const onlineCount = members.filter(m => m.online).length
+  const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500', 'bg-pink-500']
 
   return (
     <aside className="hidden lg:block sticky top-20 h-fit space-y-4">
@@ -86,24 +105,46 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
           </span>
         </div>
         <div className="p-2 max-h-52 overflow-y-auto">
-          {members.map((member, i) => (
-            <div key={i} className="member-item">
-              <div className="relative">
-                <div className={`w-8 h-8 rounded-full ${member.color} flex items-center justify-center text-white text-xs font-semibold`}>
-                  {member.initials}
+          {members.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-2">אין חברים במחזור</p>
+          ) : (
+            members.map((member, i) => (
+              <div key={member.id} className="member-item group relative">
+                <div className="relative">
+                  <div className={`w-8 h-8 rounded-full ${colors[i % colors.length]} flex items-center justify-center text-white text-xs font-semibold`}>
+                    {member.initials}
+                  </div>
+                  {member.online && (
+                    <span className="absolute bottom-0 left-0 w-2 h-2 bg-emerald-500 rounded-full border-2 border-white"></span>
+                  )}
                 </div>
-                {member.online && (
-                  <span className="absolute bottom-0 left-0 w-2 h-2 bg-emerald-500 rounded-full border-2 border-white"></span>
+                <div className="flex-1">
+                  <div className="text-sm font-medium">{member.name}</div>
+                  <div className={`text-xs ${member.online ? 'text-emerald-600' : 'text-gray-400'}`}>
+                    {member.online ? (member.name === user.firstName + ' ' + user.lastName ? 'את/ה' : 'מחובר/ת') : 'לא מחובר'}
+                  </div>
+                </div>
+                {member.name !== user.firstName + ' ' + user.lastName && (
+                  <div className="hidden group-hover:flex gap-1">
+                    <button
+                      onClick={() => router.push(`/profile/${member.id}`)}
+                      className="p-1 text-gray-400 hover:text-blue-600"
+                      title="צפה בפרופיל"
+                    >
+                      <i className="fas fa-user text-xs"></i>
+                    </button>
+                    <button
+                      onClick={() => router.push(`/messages?to=${member.id}`)}
+                      className="p-1 text-gray-400 hover:text-blue-600"
+                      title="שלח הודעה"
+                    >
+                      <i className="fas fa-envelope text-xs"></i>
+                    </button>
+                  </div>
                 )}
               </div>
-              <div>
-                <div className="text-sm font-medium">{member.name}</div>
-                <div className={`text-xs ${member.online ? 'text-emerald-600' : 'text-gray-400'}`}>
-                  {member.online ? (member.name === user.firstName + ' ' + user.lastName ? 'את/ה' : 'מחובר/ת') : member.lastSeen}
-                </div>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </aside>

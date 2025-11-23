@@ -30,6 +30,7 @@ model User {
   batches          UserBatch[]
   posts            Post[]
   comments         Comment[]
+  likes            Like[]
   events           Event[]
   eventRsvps       EventRsvp[]
   businessProfiles BusinessProfile[]
@@ -95,6 +96,19 @@ model Post {
   batch    Batch     @relation(fields: [batchId], references: [id], onDelete: Cascade)
   author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments Comment[]
+  likes    Like[]
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
 }
 
 model Comment {
