@@ -158,7 +158,14 @@ export default function ProfilePage() {
     <div className="space-y-4">
       {/* Profile Header */}
       <div className="card overflow-hidden">
-        <div className="h-32 bg-gradient-to-br from-blue-600 to-purple-600"></div>
+        <div className="h-32 bg-gradient-to-br from-blue-600 to-purple-600 relative overflow-hidden">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-white/20 text-4xl font-bold tracking-widest animate-pulse">
+              ALUMNIHUB
+            </span>
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
+        </div>
         <div className="px-4 sm:px-6 pb-6">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="relative -mt-10">
