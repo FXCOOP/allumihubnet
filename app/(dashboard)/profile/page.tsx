@@ -139,10 +139,10 @@ export default function ProfilePage() {
     <div className="space-y-4">
       {/* Profile Header */}
       <div className="card overflow-hidden">
-        <div className="h-24 bg-gradient-to-br from-blue-600 to-purple-600"></div>
-        <div className="px-6 pb-6 pt-12">
+        <div className="h-32 bg-gradient-to-br from-blue-600 to-purple-600"></div>
+        <div className="px-4 sm:px-6 pb-6">
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <div className="relative -mt-16">
+            <div className="relative -mt-10">
               {profile.image ? (
                 <img src={profile.image} alt="Profile" className="w-20 h-20 rounded-full border-4 border-white object-cover shadow-md" />
               ) : (
