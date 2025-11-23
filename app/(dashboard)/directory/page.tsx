@@ -199,35 +199,58 @@ export default function DirectoryPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {businesses.length === 0 ? (
-          <div className="card text-center text-gray-500 md:col-span-2">
-            אין עסקים בקטגוריה זו. הוסף את העסק שלך!
+          <div className="card p-8 text-center text-gray-500 md:col-span-2">
+            <i className="fas fa-store text-4xl text-gray-300 mb-3"></i>
+            <p>אין עסקים בקטגוריה זו. הוסף את העסק שלך!</p>
           </div>
         ) : (
           businesses.map(business => (
-            <div key={business.id} className="card">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="font-medium text-lg">{business.businessName}</h3>
-                  <p className="text-sm text-gray-500">
-                    {business.user.firstName} {business.user.lastName}
-                  </p>
+            <div key={business.id} className="card p-0 overflow-hidden hover:shadow-lg transition-shadow">
+              {/* Header with gradient */}
+              <div className="bg-gradient-to-l from-blue-500 to-purple-600 px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-white text-lg">{business.businessName}</h3>
+                  <span className="text-xs bg-white/20 text-white px-2 py-1 rounded-full backdrop-blur-sm">
+                    {business.category}
+                  </span>
                 </div>
-                <span className="badge bg-blue-100 text-blue-800">{business.category}</span>
+                <p className="text-white/80 text-sm">
+                  {business.user.firstName} {business.user.lastName}
+                </p>
               </div>
-              <p className="text-gray-700 text-sm mb-3">{business.shortDescription}</p>
-              <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                {business.city && <span>📍 {business.city}</span>}
-                {business.phone && <span>📞 {business.phone}</span>}
-                {business.websiteUrl && (
-                  <a
-                    href={business.websiteUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    🌐 אתר
-                  </a>
-                )}
+
+              {/* Content */}
+              <div className="p-4">
+                <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                  {business.shortDescription}
+                </p>
+
+                {/* Contact info */}
+                <div className="flex flex-col gap-2 text-sm">
+                  {business.city && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <i className="fas fa-map-marker-alt text-red-500 w-4"></i>
+                      <span>{business.city}</span>
+                    </div>
+                  )}
+                  {business.phone && (
+                    <a href={`tel:${business.phone}`} className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
+                      <i className="fas fa-phone text-green-500 w-4"></i>
+                      <span dir="ltr">{business.phone}</span>
+                    </a>
+                  )}
+                  {business.websiteUrl && (
+                    <a
+                      href={business.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+                    >
+                      <i className="fas fa-globe w-4"></i>
+                      <span>בקר באתר</span>
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           ))
