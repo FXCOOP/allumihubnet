@@ -135,7 +135,7 @@ export default function FeedPage() {
         const comment = await res.json()
         setPosts(posts.map(p =>
           p.id === postId
-            ? { ...p, comments: [...p.comments, comment], _count: { comments: p._count.comments + 1 } }
+            ? { ...p, comments: [...p.comments, comment], _count: { ...p._count, comments: p._count.comments + 1 } }
             : p
         ))
         setCommentText({ ...commentText, [postId]: '' })
