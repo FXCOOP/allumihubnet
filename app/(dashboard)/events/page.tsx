@@ -198,76 +198,94 @@ export default function EventsPage() {
             const myRsvp = event.rsvps.find(r => r.user.id === session?.user.id)
 
             return (
-              <div key={event.id} className="card">
-                <div className="flex flex-col sm:flex-row justify-between gap-4">
-                  <div className="flex-1">
-                    <h3 className="font-medium text-lg">{event.title}</h3>
-                    <p className="text-sm text-gray-500">
-                      נוצר על ידי {event.creator.firstName} {event.creator.lastName}
-                    </p>
-                  </div>
-                  <div className="text-left sm:text-right">
-                    <div className="text-sm font-medium text-blue-600">
-                      {new Date(event.startsAt).toLocaleDateString('he-IL', {
-                        weekday: 'long',
-                        day: 'numeric',
-                        month: 'long',
-                      })}
+              <div key={event.id} className="card overflow-hidden">
+                {/* Date Header */}
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-3 text-white">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-lg font-bold">
+                        {new Date(event.startsAt).toLocaleDateString('he-IL', {
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'long',
+                        })}
+                      </div>
+                      <div className="text-sm opacity-90">
+                        {new Date(event.startsAt).toLocaleTimeString('he-IL', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {new Date(event.startsAt).toLocaleTimeString('he-IL', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
+                    <div className="text-3xl">
+                      <i className="fas fa-calendar-check"></i>
                     </div>
                   </div>
                 </div>
 
-                {event.description && (
-                  <p className="text-gray-700 mt-3">{event.description}</p>
-                )}
+                {/* Event Content */}
+                <div className="p-4">
+                  <h3 className="font-bold text-lg text-gray-900">{event.title}</h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    <i className="fas fa-user text-blue-500 ml-1"></i>
+                    {event.creator.firstName} {event.creator.lastName}
+                  </p>
 
-                {event.locationText && (
-                  <p className="text-sm text-gray-600 mt-2">📍 {event.locationText}</p>
-                )}
+                  {event.description && (
+                    <p className="text-gray-700 mt-3 bg-gray-50 p-3 rounded-lg">{event.description}</p>
+                  )}
 
-                <div className="mt-4 pt-4 border-t border-gray-100">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="text-sm text-gray-600">
-                      {goingCount} מאשרים הגעה
-                      {event.maxAttendees && ` / ${event.maxAttendees} מקומות`}
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleRsvp(event.id, 'going')}
-                        className={`px-3 py-1.5 rounded-lg text-sm ${
-                          myRsvp?.status === 'going'
-                            ? 'bg-green-600 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-green-50'
-                        }`}
-                      >
-                        מגיע
-                      </button>
-                      <button
-                        onClick={() => handleRsvp(event.id, 'maybe')}
-                        className={`px-3 py-1.5 rounded-lg text-sm ${
-                          myRsvp?.status === 'maybe'
-                            ? 'bg-yellow-500 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-yellow-50'
-                        }`}
-                      >
-                        אולי
-                      </button>
-                    </div>
-                  </div>
-
-                  {goingCount > 0 && (
-                    <div className="mt-3 text-sm text-gray-600">
-                      מגיעים: {event.rsvps.filter(r => r.status === 'going').map(r =>
-                        `${r.user.firstName} ${r.user.lastName}`
-                      ).join(', ')}
+                  {event.locationText && (
+                    <div className="flex items-center gap-2 mt-3 text-sm text-gray-600">
+                      <i className="fas fa-map-marker-alt text-red-500"></i>
+                      <span>{event.locationText}</span>
                     </div>
                   )}
+
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <i className="fas fa-users text-blue-500"></i>
+                        <span>
+                          {goingCount} מאשרים הגעה
+                          {event.maxAttendees && ` / ${event.maxAttendees} מקומות`}
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleRsvp(event.id, 'going')}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                            myRsvp?.status === 'going'
+                              ? 'bg-green-600 text-white shadow-md'
+                              : 'bg-gray-100 text-gray-700 hover:bg-green-100 hover:text-green-700'
+                          }`}
+                        >
+                          <i className="fas fa-check ml-1"></i>
+                          מגיע
+                        </button>
+                        <button
+                          onClick={() => handleRsvp(event.id, 'maybe')}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                            myRsvp?.status === 'maybe'
+                              ? 'bg-yellow-500 text-white shadow-md'
+                              : 'bg-gray-100 text-gray-700 hover:bg-yellow-100 hover:text-yellow-700'
+                          }`}
+                        >
+                          <i className="fas fa-question ml-1"></i>
+                          אולי
+                        </button>
+                      </div>
+                    </div>
+
+                    {goingCount > 0 && (
+                      <div className="mt-3 p-2 bg-green-50 rounded-lg text-sm text-green-700">
+                        <i className="fas fa-check-circle ml-1"></i>
+                        מגיעים: {event.rsvps.filter(r => r.status === 'going').map(r =>
+                          `${r.user.firstName} ${r.user.lastName}`
+                        ).join(', ')}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )

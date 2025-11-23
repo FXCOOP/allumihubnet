@@ -28,8 +28,12 @@ export default function Navbar({ user }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
         {/* Logo */}
         <Link href="/feed" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
-            <span className="text-white text-xs font-bold">תח</span>
+          <div className="w-8 h-8 rounded-md overflow-hidden">
+            <img
+              src="/images/tihon.hadera.jpeg"
+              alt="תיכון חדרה"
+              className="w-full h-full object-cover"
+            />
           </div>
           <span className="font-bold text-lg text-blue-600 hidden sm:inline">תיכון חדרה | 2003</span>
         </Link>
