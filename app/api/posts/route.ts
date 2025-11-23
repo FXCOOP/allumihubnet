@@ -50,11 +50,24 @@ export async function POST(req: Request) {
       )
     }
 
-    // Ensure batch exists
+    // Ensure batch exists, create if not
     const batchId = session.user.batchId || 'hadera-2003'
-    const batch = await prisma.batch.findUnique({ where: { id: batchId } })
+    let batch = await prisma.batch.findUnique({ where: { id: batchId } })
     if (!batch) {
-      return NextResponse.json({ error: 'מחזור לא נמצא - נסה להתנתק ולהתחבר מחדש' }, { status: 400 })
+      // Create default batch and school
+      const school = await prisma.school.upsert({
+        where: { id: 'hadera-high' },
+        create: { id: 'hadera-high', name: 'תיכון חדרה' },
+        update: {},
+      })
+      batch = await prisma.batch.create({
+        data: {
+          id: 'hadera-2003',
+          name: 'מחזור חדרה 2003',
+          graduationYear: 2003,
+          schoolId: school.id,
+        },
+      })
     }
 
     const post = await prisma.post.create({
