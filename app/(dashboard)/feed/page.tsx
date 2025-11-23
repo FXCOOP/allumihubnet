@@ -9,6 +9,8 @@ interface Post {
   title: string
   content: string
   createdAt: string
+  isLiked: boolean
+  likesCount: number
   author: {
     id: string
     firstName: string
@@ -22,7 +24,7 @@ interface Post {
     createdAt: string
     author: { id: string; firstName: string; lastName: string }
   }>
-  _count: { comments: number }
+  _count: { comments: number; likes: number }
 }
 
 const postTypes = [
@@ -59,6 +61,25 @@ export default function FeedPage() {
   const [newPost, setNewPost] = useState({ type: 'general', title: '', content: '' })
   const [submitting, setSubmitting] = useState(false)
   const [commentText, setCommentText] = useState<Record<string, string>>({})
+  const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({})
+
+  const handleLike = async (postId: string) => {
+    try {
+      const res = await fetch(`/api/posts/${postId}/like`, {
+        method: 'POST',
+      })
+      if (res.ok) {
+        const { liked, likesCount } = await res.json()
+        setPosts(posts.map(p =>
+          p.id === postId
+            ? { ...p, isLiked: liked, likesCount, _count: { ...p._count, likes: likesCount } }
+            : p
+        ))
+      }
+    } catch (error) {
+      console.error('Error liking post:', error)
+    }
+  }
 
   const userInitials = session?.user?.firstName && session?.user?.lastName
     ? `${session.user.firstName[0]}${session.user.lastName[0]}`
@@ -259,25 +280,30 @@ export default function FeedPage() {
                   {post.content}
                 </p>
 
-                {/* Post Stats */}
-                <div className="flex justify-between text-xs text-gray-400 py-3 border-b border-gray-100">
-                  <span>0 לייקים</span>
-                  <span>{post._count.comments} תגובות</span>
-                </div>
+                {/* Post Actions - Unique Alumni Style */}
+                <div className="flex items-center gap-4 pt-3 mt-3 border-t border-gray-100">
+                  <button
+                    onClick={() => handleLike(post.id)}
+                    className={`flex items-center gap-1.5 text-sm transition-all ${
+                      post.isLiked
+                        ? 'text-rose-500 font-medium'
+                        : 'text-gray-500 hover:text-rose-500'
+                    }`}
+                  >
+                    <i className={`${post.isLiked ? 'fas' : 'far'} fa-star text-base`}></i>
+                    <span>{post.likesCount || 0}</span>
+                  </button>
 
-                {/* Post Actions */}
-                <div className="flex gap-2 pt-2">
-                  <button className="post-action">
-                    <i className="far fa-heart"></i>
-                    אהבתי
+                  <button
+                    onClick={() => setExpandedComments({ ...expandedComments, [post.id]: !expandedComments[post.id] })}
+                    className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-500 transition-all"
+                  >
+                    <i className="far fa-comment-dots text-base"></i>
+                    <span>{post._count.comments}</span>
                   </button>
-                  <button className="post-action">
-                    <i className="far fa-comment"></i>
-                    תגובה
-                  </button>
-                  <button className="post-action">
-                    <i className="far fa-share-square"></i>
-                    שיתוף
+
+                  <button className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-emerald-500 transition-all mr-auto">
+                    <i className="fas fa-bookmark text-base"></i>
                   </button>
                 </div>
 
