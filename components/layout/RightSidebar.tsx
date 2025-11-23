@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 interface Event {
   id: string
@@ -11,7 +12,7 @@ interface Event {
 
 export default function RightSidebar() {
   const [birthdays, setBirthdays] = useState<Array<{ name: string; initials: string; date: string }>>([])
-  const [events, setEvents] = useState<Array<{ day: string; month: string; title: string; attendees: number }>>([])
+  const [events, setEvents] = useState<Array<{ id: string; day: string; month: string; title: string; attendees: number }>>([])
 
   useEffect(() => {
     // Fetch upcoming events
@@ -25,6 +26,7 @@ export default function RightSidebar() {
           .map(e => {
             const date = new Date(e.startsAt)
             return {
+              id: e.id,
               day: date.getDate().toString(),
               month: date.toLocaleDateString('he-IL', { month: 'short' }),
               title: e.title,
@@ -78,16 +80,20 @@ export default function RightSidebar() {
           ) : (
             <div className="space-y-3">
               {events.map((event, i) => (
-                <div key={i} className={`flex gap-3 ${i > 0 ? 'pt-3 border-t border-gray-100' : ''}`}>
-                  <div className="w-11 text-center bg-blue-50 rounded-md p-1.5">
+                <Link
+                  key={event.id}
+                  href="/events"
+                  className={`flex gap-3 hover:bg-gray-50 rounded-lg p-2 -mx-2 transition-colors cursor-pointer ${i > 0 ? 'pt-3 border-t border-gray-100 mt-3' : ''}`}
+                >
+                  <div className="w-11 text-center bg-blue-50 rounded-md p-1.5 flex-shrink-0">
                     <div className="text-lg font-bold text-blue-600">{event.day}</div>
                     <div className="text-xs text-blue-600">{event.month}</div>
                   </div>
-                  <div>
-                    <div className="text-sm font-semibold">{event.title}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold truncate">{event.title}</div>
                     <div className="text-xs text-gray-400">{event.attendees} מגיעים</div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
