@@ -65,11 +65,11 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
           <div className="flex justify-center gap-6 mt-4 pt-4 border-t border-gray-200">
             <div className="text-center">
               <div className="text-lg font-semibold text-blue-600">0</div>
-              <div className="text-xs text-gray-400">צפיות</div>
+              <div className="text-xs text-gray-400">פוסטים</div>
             </div>
             <div className="text-center">
               <div className="text-lg font-semibold text-blue-600">0</div>
-              <div className="text-xs text-gray-400">חברים</div>
+              <div className="text-xs text-gray-400">תגובות</div>
             </div>
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
             <p className="text-sm text-gray-400 text-center py-2">אין חברים במחזור</p>
           ) : (
             members.map((member, i) => (
-              <div key={member.id} className="member-item group relative">
+              <Link key={member.id} href={`/profile/${member.id}`} className="member-item group relative hover:bg-gray-100">
                 <div className="relative">
                   <div className={`w-8 h-8 rounded-full ${colors[i % colors.length]} flex items-center justify-center text-white text-xs font-semibold`}>
                     {member.initials}
@@ -124,25 +124,7 @@ export default function LeftSidebar({ user }: LeftSidebarProps) {
                     {member.online ? (member.name === user.firstName + ' ' + user.lastName ? 'את/ה' : 'מחובר/ת') : 'לא מחובר'}
                   </div>
                 </div>
-                {member.name !== user.firstName + ' ' + user.lastName && (
-                  <div className="hidden group-hover:flex gap-1">
-                    <button
-                      onClick={() => router.push(`/profile/${member.id}`)}
-                      className="p-1 text-gray-400 hover:text-blue-600"
-                      title="צפה בפרופיל"
-                    >
-                      <i className="fas fa-user text-xs"></i>
-                    </button>
-                    <button
-                      onClick={() => router.push(`/messages?to=${member.id}`)}
-                      className="p-1 text-gray-400 hover:text-blue-600"
-                      title="שלח הודעה"
-                    >
-                      <i className="fas fa-envelope text-xs"></i>
-                    </button>
-                  </div>
-                )}
-              </div>
+              </Link>
             ))
           )}
         </div>
