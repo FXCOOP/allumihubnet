@@ -17,8 +17,10 @@ export default function Navbar({ user }: NavbarProps) {
   const [showMenu, setShowMenu] = useState(false)
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [notificationCount, setNotificationCount] = useState(0)
 
   useEffect(() => {
+    // Fetch profile
     fetch('/api/users/profile')
       .then(res => res.json())
       .then(data => {
@@ -26,6 +28,21 @@ export default function Navbar({ user }: NavbarProps) {
         setIsAdmin(['admin', 'super_admin', 'moderator'].includes(data.systemRole))
       })
       .catch(console.error)
+
+    // Fetch notification count
+    const fetchNotifications = () => {
+      fetch('/api/notifications/count')
+        .then(res => res.json())
+        .then(data => {
+          setNotificationCount(data.total || 0)
+        })
+        .catch(console.error)
+    }
+
+    fetchNotifications()
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   const navLinks = [
@@ -74,6 +91,11 @@ export default function Navbar({ user }: NavbarProps) {
             onClick={() => setShowMenu(!showMenu)}
             className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center text-sm font-semibold hover:ring-2 hover:ring-blue-300 transition-all"
           >
+          {notificationCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+              {notificationCount > 9 ? '9+' : notificationCount}
+            </span>
+          )}
             {profileImage ? (
               <img
                 src={profileImage}
