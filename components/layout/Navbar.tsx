@@ -69,9 +69,9 @@ export default function Navbar({ user }: NavbarProps) {
         </div>
 
         {/* User Menu */}
-        <div className="relative flex items-center gap-2">
-          <Link
-            href="/profile"
+        <div className="relative">
+          <button
+            onClick={() => setShowMenu(!showMenu)}
             className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center text-sm font-semibold hover:ring-2 hover:ring-blue-300 transition-all"
           >
             {profileImage ? (
@@ -85,16 +85,10 @@ export default function Navbar({ user }: NavbarProps) {
                 {user.firstName[0]}{user.lastName[0]}
               </div>
             )}
-          </Link>
-          <button
-            onClick={() => setShowMenu(!showMenu)}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            <i className="fas fa-chevron-down text-xs"></i>
           </button>
 
           {showMenu && (
-            <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+            <div className="absolute left-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
               <Link
                 href="/profile"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
