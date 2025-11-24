@@ -19,7 +19,7 @@ export default function MobileNav() {
       <div className="flex justify-around items-center h-14">
         {navItems.map((item) => {
           const isActive = pathname === item.href ||
-            (item.href === '/more' && ['/polls', '/memories', '/jobs', '/profile'].includes(pathname))
+            (item.href === '/more' && ['/polls', '/memories', '/jobs', '/profile', '/batch', '/map'].includes(pathname))
 
           return (
             <Link

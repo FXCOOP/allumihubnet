@@ -4,11 +4,12 @@ import Link from 'next/link'
 import { signOut } from 'next-auth/react'
 
 const menuItems = [
+  { name: 'פרופיל', href: '/profile', icon: 'fas fa-user', color: 'bg-blue-100 text-blue-600' },
+  { name: 'המחזור שלי', href: '/batch', icon: 'fas fa-users', color: 'bg-indigo-100 text-indigo-600' },
   { name: 'סקרים', href: '/polls', icon: 'fas fa-poll', color: 'bg-purple-100 text-purple-600' },
   { name: 'זיכרונות', href: '/memories', icon: 'fas fa-camera-retro', color: 'bg-orange-100 text-orange-600' },
   { name: 'דרושים', href: '/jobs', icon: 'fas fa-briefcase', color: 'bg-green-100 text-green-600' },
   { name: 'מפה', href: '/map', icon: 'fas fa-map-marked-alt', color: 'bg-teal-100 text-teal-600' },
-  { name: 'פרופיל', href: '/profile', icon: 'fas fa-user', color: 'bg-blue-100 text-blue-600' },
 ]
 
 export default function MorePage() {
