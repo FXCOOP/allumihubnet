@@ -248,10 +248,10 @@ export default function DirectoryPage() {
         </div>
       )}
 
-      {/* Business Cards */}
-      <div className="space-y-4">
+      {/* Business Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {businesses.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="col-span-full text-center py-12 text-gray-500">
             <p className="text-4xl mb-2">💼</p>
             <p>אין עסקים בקטגוריה זו</p>
           </div>
@@ -261,70 +261,46 @@ export default function DirectoryPage() {
             return (
               <div
                 key={business.id}
-                className="bg-white rounded-xl p-6 shadow-sm border hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => setSelectedBusiness(business)}
+                className="bg-white rounded-xl p-5 shadow-sm border hover:shadow-md transition-shadow"
               >
-                <div className="flex items-start gap-4 mb-4">
-                  {/* Category Icon */}
-                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 ${iconData.color}`}>
-                    <i className={`${iconData.icon} text-xl`}></i>
+                {/* Header */}
+                <div className="flex items-center gap-3 mb-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${iconData.color}`}>
+                    <i className={`${iconData.icon} text-sm`}></i>
                   </div>
-
-                  {/* Business Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-lg text-gray-900">{business.businessName}</h3>
-                    <p className="text-sm text-blue-600 font-medium">{business.category}</p>
-                    {business.city && (
-                      <p className="text-sm text-gray-500 mt-1">
-                        <i className="fas fa-map-marker-alt ml-1"></i>
-                        {business.city}
-                      </p>
-                    )}
+                    <h3 className="font-bold text-gray-900 truncate">{business.businessName}</h3>
+                    <p className="text-xs text-gray-500">{business.category}</p>
                   </div>
                 </div>
-
-                {/* Description */}
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{business.shortDescription}</p>
 
                 {/* Owner */}
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                  <span className="text-sm text-gray-500">
-                    בעלים: {business.user.firstName} {business.user.lastName}
-                  </span>
-                </div>
+                <p className="text-sm text-gray-600 mb-3">
+                  {business.user.firstName} {business.user.lastName}
+                </p>
 
                 {/* Action Buttons */}
-                <div className="flex gap-2 mt-4">
-                  {business.phone && (
+                <div className="flex gap-2">
+                  {business.phone ? (
                     <a
                       href={`tel:${business.phone}`}
-                      className="flex-1 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors text-center"
-                      onClick={(e) => e.stopPropagation()}
+                      className="flex-1 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors text-center"
                     >
-                      <i className="fas fa-phone ml-1"></i>
                       התקשר
                     </a>
-                  )}
-                  {business.websiteUrl && (
-                    <a
-                      href={business.websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors text-center"
-                      onClick={(e) => e.stopPropagation()}
+                  ) : (
+                    <button
+                      onClick={() => setSelectedBusiness(business)}
+                      className="flex-1 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
                     >
-                      <i className="fas fa-globe ml-1"></i>
-                      אתר
-                    </a>
+                      פרטים
+                    </button>
                   )}
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setSelectedBusiness(business)
-                    }}
-                    className="flex-1 py-2.5 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                    onClick={() => setSelectedBusiness(business)}
+                    className="flex-1 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    פרטים מלאים
+                    פרטים
                   </button>
                 </div>
               </div>
