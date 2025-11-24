@@ -10,18 +10,9 @@ export async function GET() {
   }
 
   const userId = session.user.id
-
-  // Count unread messages
-  const unreadMessages = await prisma.message.count({
-    where: {
-      receiverId: userId,
-      read: false
-    }
-  })
-
-  // Count new comments on user's posts (last 24 hours)
   const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
 
+  // Count new comments on user's posts (last 24 hours)
   const newComments = await prisma.comment.count({
     where: {
       post: {
@@ -51,11 +42,10 @@ export async function GET() {
     }
   })
 
-  const total = unreadMessages + newComments + newLikes
+  const total = newComments + newLikes
 
   return NextResponse.json({
     total,
-    messages: unreadMessages,
     comments: newComments,
     likes: newLikes
   })
